@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,13 +15,13 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       decoration: const BoxDecoration(
           gradient: LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          Colors.blue,
-          Colors.red,
-        ],
-      )),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.blue,
+              Colors.red,
+            ],
+          )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: _page(),
@@ -42,9 +43,9 @@ class _LoginPageState extends State<LoginPage> {
             _inputField("Password", passwordController, isPassword: true),
             const SizedBox(height: 50),
             _loginBtn(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 200),
             _extraText(),
-            const SizedBox(height: 50),
+            const SizedBox(height: 10),
             _signupBtn(),
           ],
         ),
@@ -89,14 +90,12 @@ class _LoginPageState extends State<LoginPage> {
       child: const SizedBox(
           width: double.infinity,
           child: Text(
-            "Login ",
+            "Login",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           )),
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        primary: Colors.white,
-        onPrimary: Colors.blue,
+        foregroundColor: Colors.blue, backgroundColor: Colors.white, shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
@@ -104,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _extraText() {
     return const Text(
-      "Forgot Password?",
+      "Don't have an account?",
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 16, color: Colors.white),
     );
@@ -113,20 +112,24 @@ class _LoginPageState extends State<LoginPage> {
   Widget _signupBtn() {
     return ElevatedButton(
       onPressed: () {
-        // go to sign up page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpPage()),
+        );
       },
-      child: const SizedBox(
-          width: double.infinity,
-          child: Text(
-            "Don't Have an Account? Sign Up ",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          )),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          "Sign Up",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        primary: Colors.white,
-        onPrimary: Colors.blue,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        foregroundColor: Colors.blue,
+        backgroundColor: Colors.white,
+        shape: StadiumBorder(),
+        padding: EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }

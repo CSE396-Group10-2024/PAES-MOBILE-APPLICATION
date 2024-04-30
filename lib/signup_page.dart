@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
-class SignupPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -14,13 +15,13 @@ class _SignupPageState extends State<SignupPage> {
     return Container(
       decoration: const BoxDecoration(
           gradient: LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          Colors.blue,
-          Colors.red,
-        ],
-      )),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.blue,
+              Colors.red,
+            ],
+          )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: _page(),
@@ -35,25 +36,15 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _icon(),
             const SizedBox(height: 50),
             _inputField("Username", usernameController),
             const SizedBox(height: 20),
             _inputField("Password", passwordController, isPassword: true),
-            const SizedBox(height: 50),
+            const SizedBox(height: 10),
             _signupBtn(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _icon() {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 2),
-          shape: BoxShape.circle),
-      child: const Icon(Icons.person, color: Colors.white, size: 120),
     );
   }
 
@@ -76,7 +67,7 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Widget _signupBtn() {
+  Widget _loginBtn() {
     return ElevatedButton(
       onPressed: () {
         debugPrint("Username : " + usernameController.text);
@@ -85,15 +76,46 @@ class _SignupPageState extends State<SignupPage> {
       child: const SizedBox(
           width: double.infinity,
           child: Text(
-            "Sign Up ",
+            "Login",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           )),
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        primary: Colors.white,
-        onPrimary: Colors.blue,
+        foregroundColor: Colors.blue, backgroundColor: Colors.white, shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+    );
+  }
+
+  Widget _extraText() {
+    return const Text(
+      "Don't have an account?",
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 16, color: Colors.white),
+    );
+  }
+
+  Widget _signupBtn() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      },
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          "Sign Up",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.blue,
+        backgroundColor: Colors.white,
+        shape: StadiumBorder(),
+        padding: EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }
