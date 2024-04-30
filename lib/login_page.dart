@@ -18,8 +18,8 @@ class _LoginPageState extends State<LoginPage> {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              Colors.blue,
-              Colors.red,
+              Colors.pink,
+              Colors.yellow,
             ],
           )),
       child: Scaffold(
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(fontSize: 20),
           )),
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.blue, backgroundColor: Colors.white, shape: const StadiumBorder(),
+        foregroundColor: Colors.grey, backgroundColor: Colors.white, shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.blue,
+        foregroundColor: Colors.grey,
         backgroundColor: Colors.white,
         shape: StadiumBorder(),
         padding: EdgeInsets.symmetric(vertical: 16),
