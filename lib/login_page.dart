@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
+import 'notification_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -86,6 +87,11 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         debugPrint("Username : " + usernameController.text);
         debugPrint("Password : " + passwordController.text);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NotificationPage()),
+        );
       },
       child: const SizedBox(
           width: double.infinity,
