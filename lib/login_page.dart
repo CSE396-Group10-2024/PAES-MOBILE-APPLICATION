@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'notification_page.dart';
+import 'patientProfile_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,14 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.pink,
-              Colors.yellow,
-            ],
-          )),
+          color: Colors.grey,
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: _page(),
@@ -32,13 +27,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _page() {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(30.0),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _icon(),
-            const SizedBox(height: 50),
             _inputField("Username", usernameController),
             const SizedBox(height: 20),
             _inputField("Password", passwordController, isPassword: true),
@@ -67,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
       {isPassword = false}) {
     var border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white));
+        borderSide: const BorderSide(color: Colors.white, width: 2));
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -90,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NotificationPage()),
+          MaterialPageRoute(builder: (context) => PatientProfile()),
         );
       },
       child: const SizedBox(

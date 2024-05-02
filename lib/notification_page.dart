@@ -6,7 +6,7 @@ class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(), //back button
       body: listView(),
     );
   }
