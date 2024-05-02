@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'notification_page.dart';
 import 'patientProfile_page.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -83,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PatientProfile()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       },
       child: const SizedBox(

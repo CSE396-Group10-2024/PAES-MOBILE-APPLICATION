@@ -25,7 +25,7 @@ class PatientProfile extends StatelessWidget {
                             Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "Room No.",
+                                "Bed No.",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 40, color: Colors.white),
                               ),

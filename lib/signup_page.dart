@@ -14,14 +14,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.pink,
-              Colors.yellow,
-            ],
-          )),
+          color: Colors.grey,),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: _page(),
@@ -52,7 +45,8 @@ class _SignUpPageState extends State<SignUpPage> {
       {isPassword = false}) {
     var border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white));
+        borderSide: const BorderSide(color: Colors.white, width: 2));
+
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -64,26 +58,6 @@ class _SignUpPageState extends State<SignUpPage> {
         focusedBorder: border,
       ),
       obscureText: isPassword,
-    );
-  }
-
-  Widget _loginBtn() {
-    return ElevatedButton(
-      onPressed: () {
-        debugPrint("Username : " + usernameController.text);
-        debugPrint("Password : " + passwordController.text);
-      },
-      child: const SizedBox(
-          width: double.infinity,
-          child: Text(
-            "Login",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          )),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.grey, backgroundColor: Colors.white, shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 16),
-      ),
     );
   }
 
