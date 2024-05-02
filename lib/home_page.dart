@@ -54,7 +54,7 @@ class NotificationCard extends StatelessWidget {
           child: Column(
             children: List.generate(15, (index) {
               return ListTile(
-                title: Text('ROOM # Notification Description'),
+                title: Text('BED # Notification Description'),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

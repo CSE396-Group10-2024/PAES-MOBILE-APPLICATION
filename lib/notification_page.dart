@@ -48,7 +48,7 @@ class NotificationPage extends StatelessWidget {
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
-          text: 'ROOM # ',
+          text: 'BED # ',
           style: TextStyle(
             fontSize: textSize,
             color: Colors.black,

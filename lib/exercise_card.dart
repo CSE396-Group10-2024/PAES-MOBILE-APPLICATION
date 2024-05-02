@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'addExercise_page.dart'; // Import the AddExercisesPage
 
 class ExerciseCard extends StatelessWidget {
   const ExerciseCard();
@@ -25,9 +26,17 @@ class ExerciseCard extends StatelessWidget {
                     style: TextStyle(fontSize: 19, color: Colors.black),
                   ),
                 ),
-                Icon(
-                  Icons.edit,
-                  color: Colors.black,
+                GestureDetector( // Wrap the Icon with GestureDetector
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddExercisesPage()),
+                    );
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.black,
+                  ),
                 ),
               ],
             ),
