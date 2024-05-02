@@ -30,23 +30,27 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.all(30.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _inputField("Username", usernameController),
-            const SizedBox(height: 20),
-            _inputField("Password", passwordController, isPassword: true),
-            const SizedBox(height: 50),
-            _loginBtn(),
-            const SizedBox(height: 200),
-            _extraText(),
-            const SizedBox(height: 10),
-            _signupBtn(),
-          ],
+        child: SingleChildScrollView( // Wrap with SingleChildScrollView
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _icon(),
+              _inputField("Username", usernameController),
+              const SizedBox(height: 20),
+              _inputField("Password", passwordController, isPassword: true),
+              const SizedBox(height: 50),
+              _loginBtn(),
+              const SizedBox(height: 200),
+              _extraText(),
+              const SizedBox(height: 10),
+              _signupBtn(),
+            ],
+          ),
         ),
       ),
     );
   }
+
 
   Widget _icon() {
     return Container(
