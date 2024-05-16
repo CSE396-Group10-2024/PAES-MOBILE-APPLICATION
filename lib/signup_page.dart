@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
-
+class SignUpPage extends StatefulWidget {
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -15,14 +14,8 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          Colors.blue,
-          Colors.red,
-        ],
-      )),
+        color: Colors.grey,
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: _page(),
@@ -37,12 +30,11 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _icon(),
             const SizedBox(height: 50),
             _inputField("Username", usernameController),
             const SizedBox(height: 20),
             _inputField("Password", passwordController, isPassword: true),
-            const SizedBox(height: 50),
+            const SizedBox(height: 10),
             _signupBtn(),
           ],
         ),
@@ -50,20 +42,11 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Widget _icon() {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 2),
-          shape: BoxShape.circle),
-      child: const Icon(Icons.person, color: Colors.white, size: 120),
-    );
-  }
-
   Widget _inputField(String hintText, TextEditingController controller,
       {isPassword = false}) {
     var border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white));
+        borderSide: const BorderSide(color: Colors.white, width: 2));
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -78,23 +61,36 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  Widget _extraText() {
+    return const Text(
+      "Don't have an account?",
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 16, color: Colors.white),
+    );
+  }
+
   Widget _signupBtn() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Username : ${usernameController.text}");
-        debugPrint("Password : ${passwordController.text}");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
       },
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.blue, backgroundColor: Colors.white, shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          "Sign Up",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
       ),
-      child: const SizedBox(
-          width: double.infinity,
-          child: Text(
-            "Sign Up ",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          )),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: StadiumBorder(),
+        padding: EdgeInsets.symmetric(vertical: 16),
+      ),
     );
   }
 }
