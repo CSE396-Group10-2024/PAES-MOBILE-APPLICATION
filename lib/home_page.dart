@@ -52,7 +52,7 @@ class NotificationCard extends StatelessWidget {
         margin: EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
-            children: List.generate(15, (index) {
+            children: List.generate(200, (index) {
               return ListTile(
                 title: Text('BED # Notification Description'),
                 subtitle: Row(
