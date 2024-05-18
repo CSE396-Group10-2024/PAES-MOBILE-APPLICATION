@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'home_page.dart';
+import 'package:cengproject/dbhelper/mongodb.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +13,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+  String _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.all(30.0),
       child: Center(
         child: SingleChildScrollView(
-          // Wrap with SingleChildScrollView
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -41,6 +43,12 @@ class _LoginPageState extends State<LoginPage> {
               _inputField("Password", passwordController, isPassword: true),
               const SizedBox(height: 50),
               _loginBtn(),
+              const SizedBox(height: 20),
+              if (_errorMessage.isNotEmpty)
+                Text(
+                  _errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 200),
               _extraText(),
               const SizedBox(height: 10),
@@ -55,17 +63,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget _icon() {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 2),
-          shape: BoxShape.circle),
+        border: Border.all(color: Colors.white, width: 2),
+        shape: BoxShape.circle,
+      ),
       child: const Icon(Icons.person, color: Colors.white, size: 120),
     );
   }
 
   Widget _inputField(String hintText, TextEditingController controller,
-      {isPassword = false}) {
+      {bool isPassword = false}) {
     var border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white, width: 2));
+      borderRadius: BorderRadius.circular(18),
+      borderSide: const BorderSide(color: Colors.white, width: 2),
+    );
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -82,15 +92,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginBtn() {
     return ElevatedButton(
-      onPressed: () {
-        debugPrint("Username : " + usernameController.text);
-        debugPrint("Password : " + passwordController.text);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      },
+      onPressed: _login,
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.blue,
         backgroundColor: Colors.white,
@@ -98,12 +100,13 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(vertical: 16),
       ),
       child: const SizedBox(
-          width: double.infinity,
-          child: Text(
-            "Login",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          )),
+        width: double.infinity,
+        child: Text(
+          "Login",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
     );
   }
 
@@ -123,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => SignUpPage()),
         );
       },
-      child: SizedBox(
+      child: const SizedBox(
         width: double.infinity,
         child: Text(
           "Sign Up",
@@ -134,9 +137,61 @@ class _LoginPageState extends State<LoginPage> {
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.grey,
         backgroundColor: Colors.white,
-        shape: StadiumBorder(),
-        padding: EdgeInsets.symmetric(vertical: 16),
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
+  }
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    bool isAuthenticated =
+        await MongoDatabase.authenticateUser(username, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (isAuthenticated) {
+      // Fetch the user information
+      var user = await MongoDatabase.getUser(username);
+
+      // Fetch the patients associated with the user
+      if (user != null) {
+        List<String> carePatientIds = List<String>.from(user['care_patients']);
+        List<Map<String, dynamic>> carePatients =
+            await MongoDatabase.getCarePatients(carePatientIds);
+
+        // Print the care patients to the console
+        print('Care Patients: $carePatients');
+
+        // Navigate to HomePage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                HomePage(user: user, carePatients: carePatients),
+          ),
+        );
+      }
+    } else {
+      setState(() {
+        _errorMessage = 'Invalid username or password';
+      });
+
+      // Clear the error message after 5 seconds
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
+    }
   }
 }
