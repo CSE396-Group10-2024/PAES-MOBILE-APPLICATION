@@ -1,3 +1,4 @@
+import 'package:cengproject/dbhelper/mongodb.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 
@@ -9,6 +10,42 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    bool isCreated = await MongoDatabase.createUser(username, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (isCreated) {
+      // Navigate to LoginPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      setState(() {
+        _errorMessage = 'Username already exists';
+      });
+
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +64,37 @@ class _SignUpPageState extends State<SignUpPage> {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 50),
-            _inputField("Username", usernameController),
-            const SizedBox(height: 20),
-            _inputField("Password", passwordController, isPassword: true),
-            const SizedBox(height: 10),
-            _signupBtn(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 50),
+              _inputField("Username", usernameController),
+              const SizedBox(height: 20),
+              _inputField("Password", passwordController, isPassword: true),
+              const SizedBox(height: 10),
+              if (_isLoading) CircularProgressIndicator(),
+              if (_errorMessage.isNotEmpty) ...[
+                Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+                const SizedBox(height: 10),
+              ],
+              _signupBtn(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _inputField(String hintText, TextEditingController controller,
-      {isPassword = false}) {
+      {bool isPassword = false}) {
     var border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white, width: 2));
+      borderRadius: BorderRadius.circular(18),
+      borderSide: const BorderSide(color: Colors.white, width: 2),
+    );
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -61,22 +109,15 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _extraText() {
-    return const Text(
-      "Don't have an account?",
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 16, color: Colors.white),
-    );
-  }
-
   Widget _signupBtn() {
     return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      },
+      onPressed: _signUp,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: StadiumBorder(),
+        padding: EdgeInsets.symmetric(vertical: 16),
+      ),
       child: SizedBox(
         width: double.infinity,
         child: Text(
@@ -84,12 +125,6 @@ class _SignUpPageState extends State<SignUpPage> {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20),
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.grey,
-        backgroundColor: Colors.white,
-        shape: StadiumBorder(),
-        padding: EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }
