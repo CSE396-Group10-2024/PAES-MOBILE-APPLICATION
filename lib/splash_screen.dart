@@ -36,8 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
             width: mq.width * .4,
             child: Image.asset(
               'images/PAES.png',
-              height: 200,
-              width: 200,
+              height: 250,
+              width: 250,
               fit: BoxFit.cover,
             ),
           ),
@@ -47,7 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
             child: const Text(
               'PAES',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, letterSpacing: 1),
+              style: TextStyle(
+                  color: Color.fromARGB(255, 12, 11, 11), letterSpacing: 1),
             ),
           ),
         ],
