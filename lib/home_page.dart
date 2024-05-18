@@ -3,8 +3,16 @@ import 'notification_page.dart';
 import 'patientProfile_page.dart';
 
 class HomePage extends StatelessWidget {
+  final Map<String, dynamic> user;
+  final List<Map<String, dynamic>> carePatients;
+
+  const HomePage({super.key, required this.user, required this.carePatients});
+
   @override
   Widget build(BuildContext context) {
+    print('User: $user');
+    print('Care Patients: $carePatients');
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Page'),
@@ -22,12 +30,15 @@ class HomePage extends StatelessWidget {
               child: GridView.count(
                 crossAxisCount: 2,
                 children: [
-                  GridItem(title: 'Bed #', destinationPage: PatientProfile()),
-                  GridItem(title: 'Bed #', destinationPage: PatientProfile()),
-                  GridItem(title: 'Bed #', destinationPage: PatientProfile()),
-                  GridItem(title: 'Bed #', destinationPage: PatientProfile()),
-                  GridItem(title: 'Profile', destinationPage: PatientProfile()),
-                  GridItem(title: 'Profile', destinationPage: PatientProfile()),
+                  for (var patient in carePatients)
+                    GridItem(
+                      title: '${patient['patient_number']}',
+                      destinationPage: PatientProfile(patient: patient),
+                    ),
+                  GridItem(
+                    title: 'Add Patient',
+                    destinationPage: PatientProfile(patient: {}),
+                  ),
                 ],
               ),
             ),
@@ -52,7 +63,7 @@ class NotificationCard extends StatelessWidget {
         margin: EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
-            children: List.generate(200, (index) {
+            children: List.generate(2, (index) {
               return ListTile(
                 title: Text('BED # Notification Description'),
                 subtitle: Row(
@@ -70,8 +81,6 @@ class NotificationCard extends StatelessWidget {
     );
   }
 }
-
-
 
 class GridItem extends StatelessWidget {
   final String title;
