@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'patient_information.dart';
 
 class PatientProfile extends StatelessWidget {
+  final Map<String, dynamic> patient;
+
+  const PatientProfile({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,7 @@ class PatientProfile extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 4,
-                child: Container( // Wrap the Column with Container
+                child: Container(
                   color: Colors.pink[200], // Set the background color to pink
                   child: Stack(
                     children: <Widget>[
@@ -25,12 +28,13 @@ class PatientProfile extends StatelessWidget {
                             Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "Bed No.",
+                                "${patient['room_number']}",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 40, color: Colors.white),
+                                style: const TextStyle(
+                                    fontSize: 40, color: Colors.white),
                               ),
                             ),
-                            PatientInfo(),
+                            PatientInfo(patient: patient),
                           ],
                         ),
                       ),
@@ -50,7 +54,7 @@ class PatientProfile extends StatelessWidget {
                         ],
                       ),
                     ],
-                  )
+                  ),
                 ),
               ),
             ],
@@ -60,8 +64,9 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget appBar(){
+  PreferredSizeWidget appBar() {
     return AppBar(
+      title: const Text('Patient Profile'),
     );
   }
 }
