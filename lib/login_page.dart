@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  // ignore: unused_field
   bool _isLoading = false;
   String _errorMessage = '';
 
