@@ -1,12 +1,20 @@
+import 'package:cengproject/add_patient.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'notification_page.dart';
 import 'patientProfile_page.dart';
+import 'package:cengproject/dbhelper/mongodb.dart';
 
 class HomePage extends StatelessWidget {
   final Map<String, dynamic> user;
   final List<Map<String, dynamic>> carePatients;
 
   const HomePage({super.key, required this.user, required this.carePatients});
+
+  Future<void> _quitApp() async {
+    await MongoDatabase.disconnect();
+    SystemNavigator.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +24,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () async {
+              await _quitApp();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -37,7 +53,7 @@ class HomePage extends StatelessWidget {
                     ),
                   GridItem(
                     title: 'Add Patient',
-                    destinationPage: PatientProfile(patient: {}),
+                    destinationPage: AddPatientPage(user: user),
                   ),
                 ],
               ),
