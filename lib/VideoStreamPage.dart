@@ -36,6 +36,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
   void _connectToServer() async {
     try {
+      // this is the IP address of the server but it wont be hardcoded in the final version
       _socket = await Socket.connect('192.168.10.10', 4545);
       _socket.listen(
         (data) {

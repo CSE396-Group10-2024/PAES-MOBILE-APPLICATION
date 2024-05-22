@@ -70,7 +70,7 @@ class PatientProfile extends StatelessWidget {
       title: const Text('Patient Profile'),
       actions: [
         IconButton(
-          icon: Icon(Icons.camera),
+          icon: Icon(Icons.camera_alt_outlined),
           onPressed: () {
             Navigator.push(
               context,
