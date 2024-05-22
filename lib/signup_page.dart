@@ -49,13 +49,24 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.grey,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: _page(),
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _page(),
+        ),
       ),
     );
   }
