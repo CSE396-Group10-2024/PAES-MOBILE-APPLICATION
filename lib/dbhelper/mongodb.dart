@@ -91,7 +91,8 @@ class MongoDatabase {
       var newUser = {
         'username': username,
         'password': password,
-        'care_patients': []
+        'care_patients': [],
+        'notifications': []
       };
 
       await db!.collection(CAREGIVER_COLLECTION).insertOne(newUser);
@@ -102,7 +103,8 @@ class MongoDatabase {
     }
   }
 
-  // still wont check the case of if patient is already connected with a caregiver
+  // still wont check the case of if patient is already connected with a caregiver also 
+  // needs to set variable from patient to indicate it is connected to a caregiver
   static Future<Map<String, dynamic>> addPatient(String caregiverId, String patientNumber) async {
     try {
       var caregiverCollection = db!.collection(CAREGIVER_COLLECTION);
