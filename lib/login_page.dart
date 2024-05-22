@@ -163,22 +163,15 @@ class _LoginPageState extends State<LoginPage> {
     if (isAuthenticated) {
       // Fetch the user information
       var user = await MongoDatabase.getUser(username);
-
+  
       // Fetch the patients associated with the user
       if (user != null) {
-        List<String> carePatientIds = List<String>.from(user['care_patients']);
-        List<Map<String, dynamic>> carePatients =
-            await MongoDatabase.getCarePatients(carePatientIds);
-
-        // Print the care patients to the console
-        print('Care Patients: $carePatients');
-
         // Navigate to HomePage
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) =>
-                HomePage(user: user, carePatients: carePatients),
+                HomePage(user: user),
           ),
         );
       }
