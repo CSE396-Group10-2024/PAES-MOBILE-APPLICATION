@@ -11,8 +11,7 @@ class AddPatientPage extends StatefulWidget {
 }
 
 class _AddPatientPageState extends State<AddPatientPage> {
-  final TextEditingController _patientNumberController =
-      TextEditingController();
+  final TextEditingController _patientNumberController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
 
@@ -25,9 +24,31 @@ class _AddPatientPageState extends State<AddPatientPage> {
     String patientNumber = _patientNumberController.text;
 
     try {
-      await MongoDatabase.addPatient(
-          widget.user['_id'].toHexString(), patientNumber);
-      Navigator.pop(context, true); // Pass 'true' to indicate success
+      var result = await MongoDatabase.addPatient(
+        widget.user['_id'].toHexString(),
+        patientNumber,
+      );
+
+      if (result['success']) {
+        Navigator.pop(context, true); // Pass 'true' to indicate success
+      } else {
+        switch (result['status']) {
+          case 1:
+            setState(() {
+              _errorMessage = 'Patient does not exist.';
+            });
+            break;
+          case 2:
+            setState(() {
+              _errorMessage = 'Patient already in caregiver\'s list.';
+            });
+            break;
+          default:
+            setState(() {
+              _errorMessage = 'An unexpected error occurred.';
+            });
+        }
+      }
     } catch (e) {
       print('Error adding patient: $e');
       setState(() {
@@ -36,6 +57,15 @@ class _AddPatientPageState extends State<AddPatientPage> {
     } finally {
       setState(() {
         _isLoading = false;
+      });
+    }
+
+    // Clear the error message after 5 seconds
+    if (_errorMessage.isNotEmpty) {
+      Future.delayed(Duration(seconds: 5), () {
+        setState(() {
+          _errorMessage = '';
+        });
       });
     }
   }
