@@ -1,3 +1,4 @@
+import 'package:cengproject/VideoStreamPage.dart';
 import 'exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'patient_information.dart';
@@ -5,12 +6,12 @@ import 'patient_information.dart';
 class PatientProfile extends StatelessWidget {
   final Map<String, dynamic> patient;
 
-  const PatientProfile({super.key, required this.patient});
+  const PatientProfile({Key? key, required this.patient}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(), //back button
+      appBar: appBar(context), //back button and camera icon
       body: Stack(
         children: <Widget>[
           Column(
@@ -64,9 +65,22 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget appBar() {
+  PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(
       title: const Text('Patient Profile'),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.camera),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoStreamPage(),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }
