@@ -7,9 +7,8 @@ import 'package:cengproject/dbhelper/mongodb.dart';
 
 class HomePage extends StatelessWidget {
   final Map<String, dynamic> user;
-  final List<Map<String, dynamic>> carePatients;
 
-  const HomePage({super.key, required this.user, required this.carePatients});
+  const HomePage({super.key, required this.user});
 
   Future<void> _quitApp() async {
     await MongoDatabase.disconnect();
@@ -18,9 +17,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('User: $user');
-    print('Care Patients: $carePatients');
-
+    String caregiverId = user['_id'].toHexString();
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Page'),
@@ -43,19 +40,31 @@ class HomePage extends StatelessWidget {
             flex: 5,
             child: Padding(
               padding: EdgeInsets.all(20),
-              child: GridView.count(
-                crossAxisCount: 2,
-                children: [
-                  for (var patient in carePatients)
-                    GridItem(
-                      title: '${patient['patient_number']}',
-                      destinationPage: PatientProfile(patient: patient),
-                    ),
-                  GridItem(
-                    title: 'Add Patient',
-                    destinationPage: AddPatientPage(user: user),
-                  ),
-                ],
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: MongoDatabase.getCarePatientsStream(caregiverId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    var carePatients = snapshot.data!;
+                    return GridView.count(
+                      crossAxisCount: 2,
+                      children: [
+                        for (var patient in carePatients)
+                          GridItem(
+                            title: '${patient['patient_number']}',
+                            destinationPage: PatientProfile(patient: patient),
+                          ),
+                        GridItem(
+                          title: 'Add Patient',
+                          destinationPage: AddPatientPage(user: user),
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
           ),
