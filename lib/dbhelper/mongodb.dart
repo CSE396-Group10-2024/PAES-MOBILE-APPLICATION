@@ -52,18 +52,30 @@ class MongoDatabase {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getCarePatients(
-      List<String> patientIds) async {
-    try {
-      var objectIds = patientIds.map((id) => ObjectId.parse(id)).toList();
-      var patients = await db!
-          .collection(PATIENT_COLLECTION)
-          .find(where.oneFrom('_id', objectIds))
-          .toList();
-      return patients;
-    } catch (e) {
-      print('An error occurred while getting care patients: $e');
-      return [];
+  static Stream<List<Map<String, dynamic>>> getCarePatientsStream(String caregiverId) async* {
+    var objectId = ObjectId.parse(caregiverId);
+    while (await db!.serverStatus() != null) {
+      try {
+        var caregiver = await db!
+            .collection(CAREGIVER_COLLECTION)
+            .findOne(where.id(objectId));
+        
+        if (caregiver == null || !caregiver.containsKey('care_patients')) {
+          yield [];
+        } else {
+          var patientIds = List<String>.from(caregiver['care_patients']);
+          var objectIds = patientIds.map((id) => ObjectId.parse(id)).toList();
+          var patients = await db!
+              .collection(PATIENT_COLLECTION)
+              .find(where.oneFrom('_id', objectIds))
+              .toList();
+          yield patients;
+        }
+      } catch (e) {
+        print('An error occurred while fetching care patients: $e');
+        yield [];
+      }
+      await Future.delayed(Duration(seconds: 5)); // Fetch new data every 5 seconds
     }
   }
 
@@ -90,35 +102,43 @@ class MongoDatabase {
     }
   }
 
-  // this part will be fixed and adjusted so that if patient is not found and stuff aw geez
-  static Future<void> addPatient(
-      String caregiverId, String patientNumber) async {
+  // still wont check the case of if patient is already connected with a caregiver
+  static Future<Map<String, dynamic>> addPatient(String caregiverId, String patientNumber) async {
     try {
       var caregiverCollection = db!.collection(CAREGIVER_COLLECTION);
       var patientCollection = db!.collection(PATIENT_COLLECTION);
 
       // Check if the patient exists
-      var patient =
-          await patientCollection.findOne({'patient_number': patientNumber});
+      var patient = await patientCollection.findOne({'patient_number': patientNumber});
       if (patient == null) {
         print('Patient does not exist.');
-        return;
+        return {'success': false, 'status': 1}; // Patient does not exist
       }
 
       var patientId = patient['_id'] as ObjectId;
-
-      // Convert ObjectId to string
       // ignore: deprecated_member_use
       String patientIdString = patientId.toHexString();
 
+      // Check if the patient is already in the caregiver's list
+      var caregiver = await caregiverCollection.findOne(where.id(ObjectId.fromHexString(caregiverId)));
+      if (caregiver != null && caregiver['care_patients'] != null) {
+        List<String> carePatients = List<String>.from(caregiver['care_patients']);
+        if (carePatients.contains(patientIdString)) {
+          print('Patient already in caregiver\'s care_patients list.');
+          return {'success': false, 'status': 2}; // Patient already in the list
+        }
+      }
+
       // Update the caregiver's array of care_patients with ObjectId as string
       await caregiverCollection.updateOne(
-        where.eq('_id', ObjectId.fromHexString(caregiverId)),
+        where.id(ObjectId.fromHexString(caregiverId)),
         modify.push('care_patients', patientIdString),
       );
       print('Patient added to caregiver\'s care_patients list.');
+      return {'success': true, 'status': 0}; // Patient added successfully
     } catch (e) {
       print('Error adding patient: $e');
+      return {'success': false, 'status': -1}; // Error occurred
     }
   }
 
