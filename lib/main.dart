@@ -1,11 +1,9 @@
 import 'package:cengproject/LifecycleEventHandler.dart';
-import 'package:cengproject/dbhelper/mongodb.dart';
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoDatabase.connect();
   runApp(const MyApp());
 }
 
