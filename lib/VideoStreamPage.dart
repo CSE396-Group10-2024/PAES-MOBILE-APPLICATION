@@ -27,6 +27,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   StreamController<ui.Image> _imageStreamController = StreamController<ui.Image>.broadcast();
   late Socket _socket;
   bool _processing = false;
+  bool _isConnected = false;
 
   @override
   void initState() {
@@ -34,10 +35,13 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
     _connectToServer();
   }
 
-  void _connectToServer() async {
+  Future<void> _connectToServer() async {
     try {
       // this is the IP address of the server but it wont be hardcoded in the final version
-      _socket = await Socket.connect('192.168.10.10', 4545);
+      _socket = await Socket.connect('192.168.43.216', 4545);
+      setState((){
+        _isConnected = true;
+      });
       _socket.listen(
         (data) {
           setState(() {
@@ -55,7 +59,10 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         },
       );
     } catch (e) {
-      print('Error connecting to server: $e');
+      setState(() {
+        _isConnected = false;
+        print('Error Connecting to server $e');
+      });
     }
   }
 
@@ -102,7 +109,8 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         ],
       ),
       body: Center(
-        child: StreamBuilder<ui.Image>(
+        child: _isConnected
+        ? StreamBuilder<ui.Image>(
           stream: _imageStreamController.stream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -114,11 +122,13 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
               );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            } else {
+            }
+            else {
               return CircularProgressIndicator();
             }
           },
-        ),
+        )
+            : Text('No connection'),
       ),
     );
   }
