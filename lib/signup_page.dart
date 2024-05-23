@@ -1,29 +1,72 @@
+import 'package:cengproject/dbhelper/mongodb.dart';
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
-class SignupPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    bool isCreated = await MongoDatabase.createUser(username, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (isCreated) {
+      // Navigate to LoginPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      setState(() {
+        _errorMessage = 'Username already exists';
+      });
+
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          Colors.blue,
-          Colors.red,
-        ],
-      )),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: _page(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _page(),
+        ),
       ),
     );
   }
@@ -32,36 +75,37 @@ class _SignupPageState extends State<SignupPage> {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _icon(),
-            const SizedBox(height: 50),
-            _inputField("Username", usernameController),
-            const SizedBox(height: 20),
-            _inputField("Password", passwordController, isPassword: true),
-            const SizedBox(height: 50),
-            _signupBtn(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 50),
+              _inputField("Username", usernameController),
+              const SizedBox(height: 20),
+              _inputField("Password", passwordController, isPassword: true),
+              const SizedBox(height: 10),
+              if (_isLoading) CircularProgressIndicator(),
+              if (_errorMessage.isNotEmpty) ...[
+                Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+                const SizedBox(height: 10),
+              ],
+              _signupBtn(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _icon() {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 2),
-          shape: BoxShape.circle),
-      child: const Icon(Icons.person, color: Colors.white, size: 120),
-    );
-  }
-
   Widget _inputField(String hintText, TextEditingController controller,
-      {isPassword = false}) {
+      {bool isPassword = false}) {
     var border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.white));
+      borderRadius: BorderRadius.circular(18),
+      borderSide: const BorderSide(color: Colors.white, width: 2),
+    );
 
     return TextField(
       style: const TextStyle(color: Colors.white),
@@ -78,22 +122,20 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _signupBtn() {
     return ElevatedButton(
-      onPressed: () {
-        debugPrint("Username : " + usernameController.text);
-        debugPrint("Password : " + passwordController.text);
-      },
-      child: const SizedBox(
-          width: double.infinity,
-          child: Text(
-            "Sign Up ",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
-          )),
+      onPressed: _signUp,
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        primary: Colors.white,
-        onPrimary: Colors.blue,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: StadiumBorder(),
+        padding: EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          "Sign Up",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
       ),
     );
   }
