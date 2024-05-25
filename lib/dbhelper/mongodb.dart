@@ -101,7 +101,6 @@ class MongoDatabase {
   }
 }
 
-
   static Future<bool> createUser(String username, String password) async {
     try {
       var existingUser = await db!
@@ -126,8 +125,6 @@ class MongoDatabase {
     }
   }
 
-  // still wont check the case of if patient is already connected with a caregiver also 
-  // needs to set variable from patient to indicate it is connected to a caregiver
   static Future<Map<String, dynamic>> addPatient(String caregiverId, String patientNumber) async {
   try {
     var caregiverCollection = db!.collection(CAREGIVER_COLLECTION);
@@ -178,7 +175,6 @@ class MongoDatabase {
     return {'success': false, 'status': -1}; // Error occurred
   }
 }
-
 
   static Future<void> disconnect() async {
     if (db != null) {
