@@ -38,7 +38,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   Future<void> _connectToServer() async {
     try {
       // this is the IP address of the server but it wont be hardcoded in the final version
-      _socket = await Socket.connect('192.168.43.216', 4545);
+      _socket = await Socket.connect('192.168.10.10', 4545);
       setState((){
         _isConnected = true;
       });
