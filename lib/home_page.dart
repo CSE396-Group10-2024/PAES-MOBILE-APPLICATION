@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                             destinationPage: PatientProfile(patient: patient),
                           ),
                         GridItem(
-                          title: 'Add Patient',
+                          title: 'Add Patient +',
                           destinationPage: AddPatientPage(user: user),
                         ),
                       ],
