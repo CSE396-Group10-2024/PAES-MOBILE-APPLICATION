@@ -6,7 +6,7 @@ import 'patient_information.dart';
 class PatientProfile extends StatelessWidget {
   final Map<String, dynamic> patient;
 
-  const PatientProfile({Key? key, required this.patient}) : super(key: key);
+  const PatientProfile({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class PatientProfile extends StatelessWidget {
                 child: Container(
                   color: Colors.white,
                   child: Table(
-                    children: [
+                    children: const [
                       TableRow(
                         children: [
                           ExerciseCard(),
@@ -70,12 +70,12 @@ class PatientProfile extends StatelessWidget {
       title: const Text('Patient Profile'),
       actions: [
         IconButton(
-          icon: Icon(Icons.camera_alt_outlined),
+          icon: const Icon(Icons.camera_alt_outlined),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VideoStreamPage(),
+                builder: (context) => const VideoStreamPage(),
               ),
             );
           },

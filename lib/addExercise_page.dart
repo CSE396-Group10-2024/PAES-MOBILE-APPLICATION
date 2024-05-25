@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AddExercisesPage extends StatefulWidget {
+  const AddExercisesPage({super.key});
+
   @override
   _AddExercisesPageState createState() => _AddExercisesPageState();
 }
@@ -10,7 +12,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Exercises'),
+        title: const Text('Add Exercises'),
       ),
       body: GridView.count(
         crossAxisCount: 2,
@@ -31,7 +33,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
 
   Widget _exerciseCard(String exerciseName) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       elevation: 7,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -41,11 +43,11 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
         children: [
           Text(
             exerciseName,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               _showRepsDialog(context, exerciseName);
             },
@@ -73,7 +75,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
                   onChanged: (value) {
                     reps = int.tryParse(value) ?? 0;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Reps',
                     hintText: 'Enter the number of reps',
                   ),
@@ -83,7 +85,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 // Here you can use the value of reps
                 print('Reps for $exerciseName: $reps');
@@ -91,7 +93,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

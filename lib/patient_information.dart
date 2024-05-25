@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PatientInfo extends StatelessWidget {
   final Map<String, dynamic> patient;
 
-  const PatientInfo({Key? key, required this.patient}) : super(key: key);
+  const PatientInfo({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +11,8 @@ class PatientInfo extends StatelessWidget {
       child: Column(
         children: [
           _icon(),
-          SizedBox(height: 10),
-          Row(
+          const SizedBox(height: 10),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
@@ -24,8 +24,8 @@ class PatientInfo extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
-          Row(
+          const SizedBox(height: 10),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
@@ -41,7 +41,7 @@ class PatientInfo extends StatelessWidget {
 
   Widget _icon() {
     return Container(
-      child: Icon(
+      child: const Icon(
         Icons.account_circle,
         color: Colors.white,
         size: 150,

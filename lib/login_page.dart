@@ -124,9 +124,15 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignUpPage()),
+          MaterialPageRoute(builder: (context) => const SignUpPage()),
         );
       },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
       child: const SizedBox(
         width: double.infinity,
         child: Text(
@@ -134,12 +140,6 @@ class _LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20),
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.grey,
-        backgroundColor: Colors.white,
-        shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }
