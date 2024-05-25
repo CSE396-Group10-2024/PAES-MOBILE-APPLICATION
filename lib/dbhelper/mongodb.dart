@@ -79,6 +79,29 @@ class MongoDatabase {
     }
   }
 
+  static Stream<List<Map<String, dynamic>>> getNotifications(String caregiverId) async* {
+  var objectId = ObjectId.parse(caregiverId);
+  while (await db!.serverStatus() != null) {
+    try {
+      var caregiver = await db!
+          .collection(CAREGIVER_COLLECTION)
+          .findOne(where.id(objectId));
+      
+      if (caregiver == null || !caregiver.containsKey('notifications')) {
+        yield [];
+      } else {
+        var notifications = List<Map<String, dynamic>>.from(caregiver['notifications']);
+        yield notifications;
+      }
+    } catch (e) {
+      print('An error occurred while fetching notifications: $e');
+      yield [];
+    }
+    await Future.delayed(Duration(seconds: 5)); // Fetch new data every 5 seconds
+  }
+}
+
+
   static Future<bool> createUser(String username, String password) async {
     try {
       var existingUser = await db!
@@ -106,43 +129,56 @@ class MongoDatabase {
   // still wont check the case of if patient is already connected with a caregiver also 
   // needs to set variable from patient to indicate it is connected to a caregiver
   static Future<Map<String, dynamic>> addPatient(String caregiverId, String patientNumber) async {
-    try {
-      var caregiverCollection = db!.collection(CAREGIVER_COLLECTION);
-      var patientCollection = db!.collection(PATIENT_COLLECTION);
+  try {
+    var caregiverCollection = db!.collection(CAREGIVER_COLLECTION);
+    var patientCollection = db!.collection(PATIENT_COLLECTION);
 
-      // Check if the patient exists
-      var patient = await patientCollection.findOne({'patient_number': patientNumber});
-      if (patient == null) {
-        print('Patient does not exist.');
-        return {'success': false, 'status': 1}; // Patient does not exist
-      }
-
-      var patientId = patient['_id'] as ObjectId;
-      // ignore: deprecated_member_use
-      String patientIdString = patientId.toHexString();
-
-      // Check if the patient is already in the caregiver's list
-      var caregiver = await caregiverCollection.findOne(where.id(ObjectId.fromHexString(caregiverId)));
-      if (caregiver != null && caregiver['care_patients'] != null) {
-        List<String> carePatients = List<String>.from(caregiver['care_patients']);
-        if (carePatients.contains(patientIdString)) {
-          print('Patient already in caregiver\'s care_patients list.');
-          return {'success': false, 'status': 2}; // Patient already in the list
-        }
-      }
-
-      // Update the caregiver's array of care_patients with ObjectId as string
-      await caregiverCollection.updateOne(
-        where.id(ObjectId.fromHexString(caregiverId)),
-        modify.push('care_patients', patientIdString),
-      );
-      print('Patient added to caregiver\'s care_patients list.');
-      return {'success': true, 'status': 0}; // Patient added successfully
-    } catch (e) {
-      print('Error adding patient: $e');
-      return {'success': false, 'status': -1}; // Error occurred
+    // Check if the patient exists
+    var patient = await patientCollection.findOne({'patient_number': patientNumber});
+    if (patient == null) {
+      print('Patient does not exist.');
+      return {'success': false, 'status': 1}; // Patient does not exist
     }
+
+    var patientId = patient['_id'] as ObjectId;
+    String patientIdString = patientId.toHexString();
+
+    // Check if the patient is already in the caregiver's list
+    var caregiver = await caregiverCollection.findOne(where.id(ObjectId.fromHexString(caregiverId)));
+    if (caregiver != null && caregiver['care_patients'] != null) {
+      List<String> carePatients = List<String>.from(caregiver['care_patients']);
+      if (carePatients.contains(patientIdString)) {
+        print('Patient already in caregiver\'s care_patients list.');
+        return {'success': false, 'status': 2}; // Patient already in the list
+      }
+    }
+
+    // Check if the patient already has a personal caregiver
+    if (patient['personal_caregiver'] != null && patient['personal_caregiver'].isNotEmpty) {
+      print('Patient belongs to another caregiver.');
+      return {'success': false, 'status': 3}; // Patient belongs to another caregiver
+    }
+
+    // Update the caregiver's array of care_patients with ObjectId as string
+    await caregiverCollection.updateOne(
+      where.id(ObjectId.fromHexString(caregiverId)),
+      modify.push('care_patients', patientIdString),
+    );
+
+    // Update the patient's personal_caregiver field with the caregiver's ID
+    await patientCollection.updateOne(
+      where.id(patientId),
+      modify.set('personal_caregiver', caregiverId),
+    );
+
+    print('Patient added to caregiver\'s care_patients list and personal_caregiver updated.');
+    return {'success': true, 'status': 0}; // Patient added successfully
+  } catch (e) {
+    print('Error adding patient: $e');
+    return {'success': false, 'status': -1}; // Error occurred
   }
+}
+
 
   static Future<void> disconnect() async {
     if (db != null) {
