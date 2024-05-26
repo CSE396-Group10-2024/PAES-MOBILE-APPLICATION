@@ -3,24 +3,12 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'dart:io';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: VideoStreamPage(),
-    );
-  }
-}
+import 'package:cengproject/dbhelper/mongodb.dart'; // Ensure this import points to your MongoDB helper
 
 class VideoStreamPage extends StatefulWidget {
-  const VideoStreamPage({super.key});
+  final String patientNumber;
+
+  const VideoStreamPage({super.key, required this.patientNumber});
 
   @override
   _VideoStreamPageState createState() => _VideoStreamPageState();
@@ -29,24 +17,41 @@ class VideoStreamPage extends StatefulWidget {
 class _VideoStreamPageState extends State<VideoStreamPage> {
   List<int> _videoBytes = [];
   final StreamController<ui.Image> _imageStreamController = StreamController<ui.Image>.broadcast();
-  late Socket _socket;
+  Socket? _socket;
   bool _processing = false;
   bool _isConnected = false;
+  String _connectionError = '';
 
   @override
   void initState() {
     super.initState();
-    _connectToServer();
+    _initializeConnection();
   }
 
-  Future<void> _connectToServer() async {
-    try {
-      // this is the IP address of the server but it wont be hardcoded in the final version
-      _socket = await Socket.connect('192.168.10.10', 4545);
-      setState((){
-        _isConnected = true;
+  Future<void> _initializeConnection() async {
+    // Fetch the connection address using the patient number
+    final connectionDetails = await MongoDatabase.getConnectionAddress(widget.patientNumber);
+    if (connectionDetails.isNotEmpty) {
+      final ip = connectionDetails['ip']!;
+      final port = int.parse(connectionDetails['port']!);
+      await _connectToServer(ip, port);
+    } else {
+      setState(() {
+        _isConnected = false;
+        _connectionError = 'Error: No connection details found.';
       });
-      _socket.listen(
+      print(_connectionError);
+    }
+  }
+
+  Future<void> _connectToServer(String ip, int port) async {
+    try {
+      _socket = await Socket.connect(ip, port);
+      setState(() {
+        _isConnected = true;
+        _connectionError = '';
+      });
+      _socket!.listen(
         (data) {
           setState(() {
             _videoBytes.addAll(data);
@@ -57,16 +62,31 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         },
         onError: (error) {
           print('Socket error: $error');
+          setState(() {
+            _isConnected = false;
+            _connectionError = 'Socket error: $error';
+          });
         },
         onDone: () {
           print('Connection closed');
+          setState(() {
+            _isConnected = false;
+            _connectionError = 'Connection closed';
+          });
         },
       );
+    } on SocketException catch (e) {
+      setState(() {
+        _isConnected = false;
+        _connectionError = 'Error connecting to server: $e';
+      });
+      print(_connectionError);
     } catch (e) {
       setState(() {
         _isConnected = false;
-        print('Error Connecting to server $e');
+        _connectionError = 'Unexpected error: $e';
       });
+      print(_connectionError);
     }
   }
 
@@ -97,49 +117,60 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    if (_isConnected) {
+      _socket?.destroy();
+    }
+    return true; // Return true to allow the pop to happen
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Patient Video Stream'),
-        automaticallyImplyLeading: false,  // This removes the default back button on the left
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: _isConnected
-        ? StreamBuilder<ui.Image>(
-          stream: _imageStreamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Center(
-                child: CustomPaint(
-                  size: const Size(300, 200),
-                  painter: ImagePainter(image: snapshot.data!),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            else {
-              return const CircularProgressIndicator();
-            }
-          },
-        )
-            : const Text('No connection'),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Patient Video Stream'),
+          automaticallyImplyLeading: false, // This removes the default back button on the left
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () async {
+                if (await _onWillPop()) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        ),
+        body: Center(
+          child: _isConnected
+              ? StreamBuilder<ui.Image>(
+                  stream: _imageStreamController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Center(
+                        child: CustomPaint(
+                          size: const Size(300, 200),
+                          painter: ImagePainter(image: snapshot.data!),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                )
+              : Text(_connectionError.isEmpty ? 'No connection' : _connectionError),
+        ),
       ),
     );
   }
 
   @override
   void dispose() {
-    _socket.destroy();
+    _socket?.destroy();
     _imageStreamController.close();
     super.dispose();
   }
