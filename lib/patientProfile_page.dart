@@ -75,7 +75,7 @@ class PatientProfile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const VideoStreamPage(),
+                builder: (context) => VideoStreamPage(patientNumber: patient['patient_number']),
               ),
             );
           },
