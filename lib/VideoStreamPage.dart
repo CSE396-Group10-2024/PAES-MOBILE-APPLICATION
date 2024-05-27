@@ -36,6 +36,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
       final port = int.parse(connectionDetails['port']!);
       await _connectToServer(ip, port);
     } else {
+      if (!mounted) return;
       setState(() {
         _isConnected = false;
         _connectionError = 'Error: No connection details found.';
@@ -47,12 +48,16 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   Future<void> _connectToServer(String ip, int port) async {
     try {
       _socket = await Socket.connect(ip, port);
+      if (!mounted) return;
+
       setState(() {
         _isConnected = true;
         _connectionError = '';
       });
+
       _socket!.listen(
         (data) {
+          if (!mounted) return;
           setState(() {
             _videoBytes.addAll(data);
           });
@@ -61,6 +66,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
           }
         },
         onError: (error) {
+          if (!mounted) return;
           print('Socket error: $error');
           setState(() {
             _isConnected = false;
@@ -68,6 +74,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
           });
         },
         onDone: () {
+          if (!mounted) return;
           print('Connection closed');
           setState(() {
             _isConnected = false;
@@ -76,12 +83,14 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         },
       );
     } on SocketException catch (e) {
+      if (!mounted) return;
       setState(() {
         _isConnected = false;
         _connectionError = 'Error connecting to server: $e';
       });
       print(_connectionError);
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isConnected = false;
         _connectionError = 'Unexpected error: $e';
@@ -105,6 +114,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
           // Decode the JPEG image
           final codec = await ui.instantiateImageCodec(Uint8List.fromList(imageData));
           final frame = await codec.getNextFrame();
+          if (!mounted) return;
           _imageStreamController.add(frame.image);
         } else {
           break;
@@ -126,7 +136,6 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
