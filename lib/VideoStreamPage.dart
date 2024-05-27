@@ -78,15 +78,15 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
     } on SocketException catch (e) {
       setState(() {
         _isConnected = false;
-        _connectionError = 'Error connecting to server: $e';
+        _connectionError = 'No Connection'; // error connecting to server $e
       });
       print(_connectionError);
     } catch (e) {
       setState(() {
         _isConnected = false;
-        _connectionError = 'Unexpected error: $e';
+        _connectionError = 'No Connection'; //unexpected error $e
       });
-      print(_connectionError);
+      //print(_connectionError);
     }
   }
 
