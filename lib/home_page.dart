@@ -90,7 +90,8 @@ class NotificationCard extends StatelessWidget {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No notifications found'));
         } else {
-          var notifications = snapshot.data!;
+          var notifications = snapshot.data!.reversed.toList(); // Reversing the list to display latest first
+
           return Card(
             margin: const EdgeInsets.all(20),
             child: SingleChildScrollView(
