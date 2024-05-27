@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddExercisesPage extends StatefulWidget {
   const AddExercisesPage({super.key});
@@ -8,24 +9,33 @@ class AddExercisesPage extends StatefulWidget {
 }
 
 class _AddExercisesPageState extends State<AddExercisesPage> {
+  final Map<String, int> _exerciseReps = {};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Exercises'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
       body: GridView.count(
         crossAxisCount: 2,
         children: [
-          _exerciseCard('Arm Raises (Left)'),
-          _exerciseCard('Arm Raises (Right)'),
-
-          _exerciseCard('Wrist Rotation (Left)'),
-          _exerciseCard('Wrist Rotation (Right)'),
-
-          _exerciseCard('Leg Raises (Left)'),
-          _exerciseCard('Leg Raises (Right)'),
-          _exerciseCard('Neck Rotation'),
+          _exerciseCard('Arm Raise (Left)'),
+          _exerciseCard('Arm Raise (Right)'),
+          _exerciseCard('Open Arms'),
+          _exerciseCard('Squat'),
+          _exerciseCard('Leg Raise (Left)'),
+          _exerciseCard('Leg Raise (Right)'),
+          _exerciseCard('Neck Flexion (Left)'),
+          _exerciseCard('Neck Flexion (Right)'),
         ],
       ),
     );
@@ -38,28 +48,39 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            exerciseName,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              _showRepsDialog(context, exerciseName);
-            },
-            iconSize: 40,
-          ),
-        ],
+      child: InkWell(
+        onTap: () {
+          _showRepsDialog(context, exerciseName);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              exerciseName,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            _exerciseReps.containsKey(exerciseName)
+                ? Text(
+                    '${_exerciseReps[exerciseName]} reps',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      _showRepsDialog(context, exerciseName);
+                    },
+                    iconSize: 40,
+                  ),
+          ],
+        ),
       ),
     );
   }
 
   Future<void> _showRepsDialog(BuildContext context, String exerciseName) async {
-    int reps = 0;
+    int reps = _exerciseReps[exerciseName] ?? 0;
+    final TextEditingController controller = TextEditingController(text: reps.toString());
 
     return showDialog<void>(
       context: context,
@@ -71,10 +92,14 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
             child: ListBody(
               children: <Widget>[
                 TextField(
+                  controller: controller,
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     reps = int.tryParse(value) ?? 0;
                   },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   decoration: const InputDecoration(
                     labelText: 'Reps',
                     hintText: 'Enter the number of reps',
@@ -87,8 +112,9 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                // Here you can use the value of reps
-                print('Reps for $exerciseName: $reps');
+                setState(() {
+                  _exerciseReps[exerciseName] = reps;
+                });
                 Navigator.of(context).pop();
               },
             ),
