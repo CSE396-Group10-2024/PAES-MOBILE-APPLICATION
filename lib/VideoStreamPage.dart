@@ -82,7 +82,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
           });
         },
       );
-    } on SocketException catch (e) {
+    } on SocketException {
       if (!mounted) return;
       setState(() {
         _isConnected = false;
