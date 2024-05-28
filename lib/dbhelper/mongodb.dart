@@ -213,13 +213,18 @@ class MongoDatabase {
               where.id(objectId),
               modify.set('requested_video_connection', false));
 
+          // Extract and format the requested_connection_time
+          String requestedConnectionTime = patient['requested_connection_time'];
+          DateTime dateTime = DateTime.parse(requestedConnectionTime);
+          String formattedTime = '${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+
           // Show local notification
           String roomNumber = patient['room_number'];
           String patientNum = patient['patient_number'];
-          String payload = 'Room: $roomNumber, Patient: $patientNum'; // Example payload
+          String payload = 'Room: $roomNumber, Patient: $patientNum, Time: $formattedTime'; // Example payload
           await LocalNotifications.showNotification(
               'Video Connection Request',
-              'Room: $roomNumber, Patient: $patientNum',
+              'Room: $roomNumber, Patient: $patientNum, Time: $formattedTime',
               payload);
         }
       } catch (e) {
@@ -231,6 +236,7 @@ class MongoDatabase {
       yield null;
     }
   }
+
 
   static Future<void> disconnect() async {
     if (db != null) {
