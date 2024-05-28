@@ -61,10 +61,10 @@ class PatientProfile extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 150, // Adjust the height as needed
                     child: Row(
-                      children: const [
+                      children: [
                         Expanded(child: ExerciseCard()), // Stretch the ExerciseCard
                       ],
                     ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cengproject/dbhelper/mongodb.dart';
 
@@ -55,7 +56,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
         }
       }
     } catch (e) {
-      print('Error adding patient: $e');
+      if (kDebugMode) {
+        print('Error adding patient: $e');
+      }
       setState(() {
         _errorMessage = 'Error adding patient: $e';
       });

@@ -141,7 +141,7 @@ class NotificationCard extends StatelessWidget {
                   var time = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 
                   return ListTile(
-                    title: Text('${notification['room_number']} ${notification['request']}', style: TextStyle(color: Colors.white)),
+                    title: Text('${notification['room_number']} ${notification['request']}', style: const TextStyle(color: Colors.white)),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

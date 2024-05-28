@@ -1,8 +1,10 @@
 import 'package:cengproject/dbhelper/constant.dart';
 import 'package:cengproject/local_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class MongoDatabase {
+  // ignore: prefer_typing_uninitialized_variables
   static var db;
 
   static Future<void> connect() async {
@@ -10,19 +12,27 @@ class MongoDatabase {
       // Establish the database connection
       db = await Db.create(MONGO_CONN_URL);
       await db!.open();
-      print('Database connection opened.');
+      if (kDebugMode) {
+        print('Database connection opened.');
+      }
 
       // Check the server status to confirm connection
       var status = await db!.serverStatus();
       if (status != null) {
-        print('Connected to database');
+        if (kDebugMode) {
+          print('Connected to database');
+        }
       } else {
-        print('Failed to retrieve server status');
+        if (kDebugMode) {
+          print('Failed to retrieve server status');
+        }
         return;
       }
     } catch (e) {
       // Handle any errors that occur during connection or querying
-      print('An error occurred: $e');
+      if (kDebugMode) {
+        print('An error occurred: $e');
+      }
     }
   }
 
@@ -37,7 +47,9 @@ class MongoDatabase {
         }
       }
     } catch (e) {
-      print('An error occurred during authentication: $e');
+      if (kDebugMode) {
+        print('An error occurred during authentication: $e');
+      }
     }
     return false;
   }
@@ -48,7 +60,9 @@ class MongoDatabase {
       var user = await collection.findOne({'username': username});
       return user;
     } catch (e) {
-      print('An error occurred while getting user: $e');
+      if (kDebugMode) {
+        print('An error occurred while getting user: $e');
+      }
       return null;
     }
   }
@@ -73,7 +87,9 @@ class MongoDatabase {
           yield patients;
         }
       } catch (e) {
-        print('An error occurred while fetching care patients: $e');
+        if (kDebugMode) {
+          print('An error occurred while fetching care patients: $e');
+        }
         yield [];
       }
       await Future.delayed(const Duration(seconds: 10)); // Fetch new data every 2 seconds
@@ -95,7 +111,9 @@ class MongoDatabase {
         yield notifications;
       }
     } catch (e) {
-      print('An error occurred while fetching notifications: $e');
+      if (kDebugMode) {
+        print('An error occurred while fetching notifications: $e');
+      }
       yield [];
     }
     await Future.delayed(const Duration(seconds: 5)); // Fetch new data every 5 seconds
@@ -121,7 +139,9 @@ class MongoDatabase {
       await db!.collection(CAREGIVER_COLLECTION).insertOne(newUser);
       return true;
     } catch (e) {
-      print('An error occurred during user creation: $e');
+      if (kDebugMode) {
+        print('An error occurred during user creation: $e');
+      }
       return false;
     }
   }
@@ -134,7 +154,9 @@ class MongoDatabase {
     // Check if the patient exists
     var patient = await patientCollection.findOne({'patient_number': patientNumber});
     if (patient == null) {
-      print('Patient does not exist.');
+      if (kDebugMode) {
+        print('Patient does not exist.');
+      }
       return {'success': false, 'status': 1}; // Patient does not exist
     }
 
@@ -147,14 +169,18 @@ class MongoDatabase {
       if (caregiver != null && caregiver['care_patients'] != null) {
         List<String> carePatients = List<String>.from(caregiver['care_patients']);
         if (carePatients.contains(patientIdString)) {
-          print('Patient already in caregiver\'s care_patients list.');
+          if (kDebugMode) {
+            print('Patient already in caregiver\'s care_patients list.');
+          }
           return {'success': false, 'status': 2}; // Patient already in the list
         }
       }
 
       // Check if the patient already has a personal caregiver
       if (patient['personal_caregiver'] != null && patient['personal_caregiver'].isNotEmpty) {
-        print('Patient belongs to another caregiver.');
+        if (kDebugMode) {
+          print('Patient belongs to another caregiver.');
+        }
         return {'success': false, 'status': 3}; // Patient belongs to another caregiver
       }
 
@@ -170,10 +196,14 @@ class MongoDatabase {
         modify.set('personal_caregiver', caregiverId),
       );
 
-      print('Patient added to caregiver\'s care_patients list and personal_caregiver updated.');
+      if (kDebugMode) {
+        print('Patient added to caregiver\'s care_patients list and personal_caregiver updated.');
+      }
       return {'success': true, 'status': 0}; // Patient added successfully
     } catch (e) {
-      print('Error adding patient: $e');
+      if (kDebugMode) {
+        print('Error adding patient: $e');
+      }
       return {'success': false, 'status': -1}; // Error occurred
     }
   }
@@ -193,7 +223,9 @@ class MongoDatabase {
         }
       }
     } catch (e) {
-      print('An error occurred while fetching the connection address: $e');
+      if (kDebugMode) {
+        print('An error occurred while fetching the connection address: $e');
+      }
     }
     return {};
   }
@@ -227,7 +259,9 @@ class MongoDatabase {
               payload);
         }
       } catch (e) {
-        print('An error occurred while checking video connection request: $e');
+        if (kDebugMode) {
+          print('An error occurred while checking video connection request: $e');
+        }
       }
 
       // Wait for 5 seconds before checking again
@@ -239,7 +273,9 @@ class MongoDatabase {
   static Future<void> disconnect() async {
     if (db != null) {
       await db!.close();
-      print('Database connection closed.');
+      if (kDebugMode) {
+        print('Database connection closed.');
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:cengproject/dbhelper/mongodb.dart'; // Ensure this import points to your MongoDB helper
@@ -41,7 +41,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         _isConnected = false;
         _connectionError = 'Error: No connection details found.';
       });
-      print(_connectionError);
+      if (kDebugMode) {
+        print(_connectionError);
+      }
     }
   }
 
@@ -67,7 +69,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         },
         onError: (error) {
           if (!mounted) return;
-          print('Socket error: $error');
+          if (kDebugMode) {
+            print('Socket error: $error');
+          }
           setState(() {
             _isConnected = false;
             _connectionError = 'Socket error: $error';
@@ -75,7 +79,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         },
         onDone: () {
           if (!mounted) return;
-          print('Connection closed');
+          if (kDebugMode) {
+            print('Connection closed');
+          }
           setState(() {
             _isConnected = false;
             _connectionError = 'Connection closed';
@@ -88,7 +94,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         _isConnected = false;
         _connectionError = 'No Connection'; // error connecting to server $e
       });
-      print(_connectionError);
+      if (kDebugMode) {
+        print(_connectionError);
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -121,7 +129,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
         }
       }
     } catch (e) {
-      print('Error updating image: $e');
+      if (kDebugMode) {
+        print('Error updating image: $e');
+      }
     } finally {
       _processing = false;
     }
@@ -176,8 +186,8 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
               Navigator.of(context).pop();
             }
           },
-          child: const Icon(Icons.call_end),
           backgroundColor: Colors.red,
+          child: const Icon(Icons.call_end),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
