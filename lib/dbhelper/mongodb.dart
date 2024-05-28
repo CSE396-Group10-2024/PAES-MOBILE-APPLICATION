@@ -76,7 +76,7 @@ class MongoDatabase {
         print('An error occurred while fetching care patients: $e');
         yield [];
       }
-      await Future.delayed(const Duration(seconds: 5)); // Fetch new data every 5 seconds
+      await Future.delayed(const Duration(seconds: 2)); // Fetch new data every 2 seconds
     }
   }
 
@@ -180,8 +180,8 @@ class MongoDatabase {
 
   static Future<Map<String, String>> getConnectionAddress(String patientNumber) async {
     try {
-      var collection = db!.collection(PATIENT_COLLECTION);
-      var patient = await collection.findOne(where.eq('patient_number', patientNumber));
+      var patientCollection = db!.collection(PATIENT_COLLECTION);
+      var patient = await patientCollection.findOne(where.eq('patient_number', patientNumber));
       if (patient != null) {
         var connectionAddress = patient['connection_address'];
         if (connectionAddress != null && connectionAddress.contains(':')) {
@@ -198,7 +198,6 @@ class MongoDatabase {
     return {};
   }
 
-  // Stream method to check the requested_video_connection field
   static Stream<void> checkVideoConnectionRequest(String patientId) async* {
     var objectId = ObjectId.parse(patientId);
     while (await db!.serverStatus() != null) {
@@ -236,7 +235,6 @@ class MongoDatabase {
       yield null;
     }
   }
-
 
   static Future<void> disconnect() async {
     if (db != null) {
