@@ -120,7 +120,7 @@ class NotificationCard extends StatelessWidget {
 
           return Card(
             color: Colors.white.withOpacity(0.1),
-            margin: const EdgeInsets.all(22),
+            margin: const EdgeInsets.all(20),
             child: SingleChildScrollView(
               child: Column(
                 children: notifications.map((notification) {
