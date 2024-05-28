@@ -76,7 +76,7 @@ class MongoDatabase {
         print('An error occurred while fetching care patients: $e');
         yield [];
       }
-      await Future.delayed(const Duration(seconds: 2)); // Fetch new data every 2 seconds
+      await Future.delayed(const Duration(seconds: 10)); // Fetch new data every 2 seconds
     }
   }
 
@@ -230,8 +230,8 @@ class MongoDatabase {
         print('An error occurred while checking video connection request: $e');
       }
 
-      // Wait for 2 seconds before checking again
-      await Future.delayed(const Duration(seconds: 2));
+      // Wait for 5 seconds before checking again
+      await Future.delayed(const Duration(seconds: 7));
       yield null;
     }
   }
