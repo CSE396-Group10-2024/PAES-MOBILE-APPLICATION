@@ -38,16 +38,23 @@ class _HomePageState extends State<HomePage> {
     String caregiverId = widget.user['_id'].toHexString();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('Home Page', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 34, 43, 170),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () async {
-              await _quitApp();
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: ElevatedButton(
+              onPressed: _quitApp,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black,
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('EXIT', style: TextStyle(color: Colors.black)),
+            ),
           ),
         ],
       ),
+      backgroundColor: const Color.fromARGB(255, 34, 43, 170),
       body: Column(
         children: [
           Expanded(
@@ -107,12 +114,13 @@ class NotificationCard extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No notifications found'));
+          return const Center(child: Text('No notifications found', style: TextStyle(color: Colors.white)));
         } else {
           var notifications = snapshot.data!.reversed.toList(); // Reversing the list to display latest first
 
           return Card(
-            margin: const EdgeInsets.all(20),
+            color: Colors.white.withOpacity(0.1),
+            margin: const EdgeInsets.all(22),
             child: SingleChildScrollView(
               child: Column(
                 children: notifications.map((notification) {
@@ -133,12 +141,12 @@ class NotificationCard extends StatelessWidget {
                   var time = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 
                   return ListTile(
-                    title: Text('${notification['room_number']} ${notification['request']}'),
+                    title: Text('${notification['room_number']} ${notification['request']}', style: TextStyle(color: Colors.white)),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(date, style: const TextStyle(fontSize: 10)),
-                        Text(time, style: const TextStyle(fontSize: 10)),
+                        Text(date, style: const TextStyle(fontSize: 10, color: Colors.white70)),
+                        Text(time, style: const TextStyle(fontSize: 10, color: Colors.white70)),
                       ],
                     ),
                   );
@@ -168,9 +176,10 @@ class GridItem extends StatelessWidget {
         );
       },
       child: Card(
+        color: Colors.white.withOpacity(0.3),
         margin: const EdgeInsets.all(8),
         child: Center(
-          child: Text(title),
+          child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 18)),
         ),
       ),
     );
