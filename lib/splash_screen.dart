@@ -28,27 +28,38 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 34, 43, 170),
       body: Stack(
         children: [
-          Positioned(
-            left: mq.width * .3,
-            top: mq.height * .3,
-            width: mq.width * .4,
-            child: Image.asset(
-              'images/PAES.png',
-              height: 250,
-              width: 250,
-              fit: BoxFit.cover,
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/PAES.png',  // Ensure the path is correct
+                  height: mq.height * 0.3,
+                  width: mq.width * 0.6,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(height: 20),
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 255, 255, 255)),
+                ),
+              ],
             ),
           ),
           Positioned(
-            bottom: mq.height * .15,
+            bottom: mq.height * 0.15,
             width: mq.width,
             child: const Text(
               'PAES',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Color.fromARGB(255, 12, 11, 11), letterSpacing: 1),
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
             ),
           ),
         ],
