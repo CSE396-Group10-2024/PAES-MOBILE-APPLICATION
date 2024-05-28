@@ -1,4 +1,5 @@
 import 'package:cengproject/dbhelper/constant.dart';
+import 'package:cengproject/local_notifications.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class MongoDatabase {
@@ -195,6 +196,40 @@ class MongoDatabase {
       print('An error occurred while fetching the connection address: $e');
     }
     return {};
+  }
+
+  // Stream method to check the requested_video_connection field
+  static Stream<void> checkVideoConnectionRequest(String patientId) async* {
+    var objectId = ObjectId.parse(patientId);
+    while (await db!.serverStatus() != null) {
+      try {
+        var patient = await db!
+            .collection(PATIENT_COLLECTION)
+            .findOne(where.id(objectId));
+
+        if (patient != null && patient['requested_video_connection'] == true) {
+          // Update the requested_video_connection field to false
+          await db!.collection(PATIENT_COLLECTION).update(
+              where.id(objectId),
+              modify.set('requested_video_connection', false));
+
+          // Show local notification
+          String roomNumber = patient['room_number'];
+          String patientNum = patient['patient_number'];
+          String payload = 'Room: $roomNumber, Patient: $patientNum'; // Example payload
+          await LocalNotifications.showNotification(
+              'Video Connection Request',
+              'Room: $roomNumber, Patient: $patientNum',
+              payload);
+        }
+      } catch (e) {
+        print('An error occurred while checking video connection request: $e');
+      }
+
+      // Wait for 2 seconds before checking again
+      await Future.delayed(const Duration(seconds: 2));
+      yield null;
+    }
   }
 
   static Future<void> disconnect() async {

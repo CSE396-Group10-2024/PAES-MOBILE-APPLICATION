@@ -1,13 +1,33 @@
 import 'package:cengproject/add_patient.dart';
+import 'package:cengproject/patientProfile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'patientProfile_page.dart';
 import 'package:cengproject/dbhelper/mongodb.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final Map<String, dynamic> user;
 
   const HomePage({super.key, required this.user});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _startVideoConnectionRequestStream();
+  }
+
+  void _startVideoConnectionRequestStream() {
+    for (String patientId in widget.user['care_patients']) {
+      MongoDatabase.checkVideoConnectionRequest(patientId).listen((_) {
+        // Stream is managed here, no need to update UI directly
+      });
+    }
+  }
 
   Future<void> _quitApp() async {
     await MongoDatabase.disconnect();
@@ -16,7 +36,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String caregiverId = user['_id'].toHexString();
+    String caregiverId = widget.user['_id'].toHexString();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Page'),
@@ -58,7 +78,7 @@ class HomePage extends StatelessWidget {
                           ),
                         GridItem(
                           title: 'Add Patient +',
-                          destinationPage: AddPatientPage(user: user),
+                          destinationPage: AddPatientPage(user: widget.user),
                         ),
                       ],
                     );
