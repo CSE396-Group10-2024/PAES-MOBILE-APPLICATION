@@ -15,7 +15,8 @@ class ExerciseCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
+          crossAxisAlignment: CrossAxisAlignment.center, // Center the content horizontally
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -23,6 +24,7 @@ class ExerciseCard extends StatelessWidget {
                 const Expanded(
                   child: Text(
                     "Physical Therapy Program",
+                    textAlign: TextAlign.center, // Center the text
                     style: TextStyle(fontSize: 19, color: Colors.black),
                   ),
                 ),
@@ -40,16 +42,11 @@ class ExerciseCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10), // Add some space between text and progress bar
+            const SizedBox(height: 10), // Add some space between text and the next element
             Text(
-              "Today's Progress",
+              "UNNASIGNED",
+              textAlign: TextAlign.center, // Center the text
               style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 10), // Add some space between text and progress bar
-            LinearProgressIndicator(
-              value: 0.5, // Set the progress value here (between 0.0 and 1.0)
-              backgroundColor: Colors.grey[300],
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
           ],
         ),
