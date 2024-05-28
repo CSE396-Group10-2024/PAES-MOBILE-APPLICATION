@@ -140,18 +140,8 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Patient Video Stream'),
+          title: const Center(child: Text('Patient Video Stream')),
           automaticallyImplyLeading: false, // This removes the default back button on the left
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () async {
-                if (await _onWillPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
         ),
         body: Center(
           child: _isConnected
@@ -159,10 +149,16 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
                   stream: _imageStreamController.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Center(
-                        child: CustomPaint(
-                          size: const Size(300, 200),
-                          painter: ImagePainter(image: snapshot.data!),
+                      return SizedBox.expand(
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: SizedBox(
+                            width: snapshot.data!.width.toDouble(),
+                            height: snapshot.data!.height.toDouble(),
+                            child: CustomPaint(
+                              painter: ImagePainter(image: snapshot.data!),
+                            ),
+                          ),
                         ),
                       );
                     } else if (snapshot.hasError) {
@@ -174,6 +170,16 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
                 )
               : Text(_connectionError.isEmpty ? 'No connection' : _connectionError),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            if (await _onWillPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: const Icon(Icons.call_end),
+          backgroundColor: Colors.red,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
@@ -193,10 +199,9 @@ class ImagePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Calculate the position to center the image
-    final double x = (size.width - image.width) / 2;
-    final double y = (size.height - image.height) / 2;
-    canvas.drawImage(image, Offset(x, y), Paint());
+    // Draw the image to fill the canvas
+    final paint = Paint();
+    canvas.drawImage(image, Offset.zero, paint);
   }
 
   @override
