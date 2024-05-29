@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> initializeApp() async {
-    await MongoDatabase.connect();
+    await MongoDatabase.checkAndReconnectDb();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),
