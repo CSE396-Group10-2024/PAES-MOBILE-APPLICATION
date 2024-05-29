@@ -270,6 +270,40 @@ class MongoDatabase {
     }
   }
 
+static Future<bool> assignRepsToExercises(ObjectId patientId, Map<String, int> exerciseReps) async {
+  try {
+    var patientCollection = db!.collection(PATIENT_COLLECTION);
+    var patient = await patientCollection.findOne(where.id(patientId));
+
+    if (patient != null) {
+      var todaysExercises = patient['todays_exercises'] ?? {};
+
+      exerciseReps.forEach((exerciseName, reps) {
+        if (todaysExercises.containsKey(exerciseName)) {
+          todaysExercises[exerciseName]['assigned_number'] = reps;
+        } else {
+          todaysExercises[exerciseName] = {'assigned_number': reps, 'repeated_number': 0};
+        }
+      });
+
+      var result = await patientCollection.update(
+        where.id(patientId),
+        modify
+          ..set('todays_exercises', todaysExercises)
+          ..set('are_exercises_assigned', true)
+      );
+
+      return result['nModified'] > 0;
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('An error occurred while assigning reps to exercises: $e');
+    }
+  }
+  return false;
+}
+
+
   static Future<void> disconnect() async {
     if (db != null) {
       await db!.close();

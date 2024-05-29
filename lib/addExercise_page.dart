@@ -3,27 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddExercisesPage extends StatefulWidget {
-  const AddExercisesPage({super.key});
+  final Map<String, dynamic> patient;
+
+  const AddExercisesPage({super.key, required this.patient});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AddExercisesPageState createState() => _AddExercisesPageState();
 }
 
 class _AddExercisesPageState extends State<AddExercisesPage> {
   final Map<String, int> _exerciseReps = {};
-  final List<Map<String, dynamic>> _exercises = [
-    {'name': 'Arm Raise (Left)', 'type': 'Arms'},
-    {'name': 'Arm Raise (Right)', 'type': 'Arms'},
-    {'name': 'Open Arms', 'type': 'Arms'},
-    {'name': 'Squat', 'type': 'Legs'},
-    {'name': 'Leg Raise (Left)', 'type': 'Legs'},
-    {'name': 'Leg Raise (Right)', 'type': 'Legs'},
-    {'name': 'Neck Flexion (Left)', 'type': 'Neck'},
-    {'name': 'Neck Flexion (Right)', 'type': 'Neck'},
-    {'name': 'Default Exercise 1', 'type': 'Default'},
-    {'name': 'Default Exercise 2', 'type': 'Default'},
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeExerciseReps();
+  }
+
+  void _initializeExerciseReps() {
+    widget.patient['todays_exercises'].forEach((exerciseName, _) {
+      _exerciseReps[exerciseName] = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(right: 20.0), // Add padding to the right
+            padding: const EdgeInsets.only(right: 20.0),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -63,17 +64,17 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
             mainAxisSpacing: 10,
             childAspectRatio: 3 / 2,
           ),
-          itemCount: _exercises.length,
+          itemCount: _exerciseReps.length,
           itemBuilder: (context, index) {
-            final exercise = _exercises[index];
-            return _exerciseCard(exercise['name'], exercise['type']);
+            final exerciseName = _exerciseReps.keys.elementAt(index);
+            return _exerciseCard(exerciseName);
           },
         ),
       ),
     );
   }
 
-  Widget _exerciseCard(String exerciseName, String exerciseType) {
+  Widget _exerciseCard(String exerciseName) {
     return Card(
       color: Colors.white.withOpacity(0.3),
       margin: const EdgeInsets.all(10),
@@ -99,27 +100,20 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
                 ),
               ),
               const SizedBox(height: 5),
-              Flexible(
-                child: Text(
-                  exerciseType,
-                  style: const TextStyle(fontSize: 12, color: Colors.white70),
-                ),
-              ),
-              const SizedBox(height: 5),
-              if (_exerciseReps.containsKey(exerciseName))
-                Flexible(
-                  child: Text(
-                    '${_exerciseReps[exerciseName]} reps',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                )
-              else
+              if (_exerciseReps[exerciseName] == 0)
                 IconButton(
                   icon: const Icon(Icons.add, color: Colors.white),
                   onPressed: () {
                     _showRepsDialog(context, exerciseName);
                   },
                   iconSize: 24,
+                )
+              else
+                Flexible(
+                  child: Text(
+                    '${_exerciseReps[exerciseName]} reps',
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
             ],
           ),
@@ -134,7 +128,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
 
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Enter Reps for $exerciseName'),
