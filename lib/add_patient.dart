@@ -15,6 +15,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
   final TextEditingController _patientNumberController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
+  Future<void>? _delayedFuture;
 
   Future<void> _addPatient() async {
     setState(() {
@@ -24,6 +25,23 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
     String patientNumber = _patientNumberController.text;
 
+    if (patientNumber.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Patient number cannot be empty';
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _errorMessage = '';
+          });
+        }
+      });
+
+      return;
+    }
+
     try {
       var result = await MongoDatabase.addPatient(
         widget.user['_id'].toHexString(),
@@ -31,51 +49,64 @@ class _AddPatientPageState extends State<AddPatientPage> {
       );
 
       if (result['success']) {
-        Navigator.pop(context, true); // Pass 'true' to indicate success
-      } else {
-        switch (result['status']) {
-          case 1:
-            setState(() {
-              _errorMessage = 'Patient does not exist.';
-            });
-            break;
-          case 2:
-            setState(() {
-              _errorMessage = 'Patient already in caregiver\'s list.';
-            });
-            break;
-          case 3:
-            setState(() {
-              _errorMessage = 'Patient belongs to another caregiver.';
-            });
-            break;
-          default:
-            setState(() {
-              _errorMessage = 'An unexpected error occurred.';
-            });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Patient added successfully')),
+          );
+          Navigator.pop(context, true); // Pass 'true' to indicate success
         }
+      } else {
+        setState(() {
+          switch (result['status']) {
+            case 1:
+              _errorMessage = 'Patient does not exist.';
+              break;
+            case 2:
+              _errorMessage = 'Patient already in caregiver\'s list.';
+              break;
+            case 3:
+              _errorMessage = 'Patient belongs to another caregiver.';
+              break;
+            default:
+              _errorMessage = 'An unexpected error occurred.';
+          }
+        });
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error adding patient: $e');
       }
-      setState(() {
-        _errorMessage = 'Error adding patient: $e';
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Error adding patient: $e';
+        });
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
 
-    // Clear the error message after 5 seconds
+    // Clear the error message after 2 seconds
     if (_errorMessage.isNotEmpty) {
-      Future.delayed(const Duration(seconds: 5), () {
-        setState(() {
-          _errorMessage = '';
-        });
+      _delayedFuture = Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _errorMessage = '';
+          });
+        }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _patientNumberController.dispose();
+    // Cancel the delayed future if it's still pending
+    _delayedFuture?.then((value) => null);
+    super.dispose();
   }
 
   @override
