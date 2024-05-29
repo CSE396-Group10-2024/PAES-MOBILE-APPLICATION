@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                         for (var patient in carePatients)
                           GridItem(
                             title: '${patient['patient_number']}',
-                            destinationPage: PatientProfile(patient: patient),
+                            destinationPage: PatientProfile(patientId: patient['_id'].toHexString()),
                           ),
                         GridItem(
                           title: 'Add Patient +',
