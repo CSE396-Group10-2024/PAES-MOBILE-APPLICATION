@@ -4,17 +4,34 @@ import 'exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'patient_information.dart';
 
-class PatientProfile extends StatelessWidget {
+class PatientProfile extends StatefulWidget {
   final String patientId;
 
   const PatientProfile({super.key, required this.patientId});
+
+  @override
+  _PatientProfileState createState() => _PatientProfileState();
+}
+
+class _PatientProfileState extends State<PatientProfile> {
+  @override
+  void initState() {
+    super.initState();
+    _startResetExercisesStream();
+  }
+
+  void _startResetExercisesStream() {
+    MongoDatabase.resetExercisesStream(widget.patientId).listen((_) {
+      // Handle any additional logic if needed, for now, it just starts the stream.
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(context), // Back button
       body: StreamBuilder<Map<String, dynamic>>(
-        stream: MongoDatabase.getPatientByIdStream(patientId),
+        stream: MongoDatabase.getPatientByIdStream(widget.patientId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
