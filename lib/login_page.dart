@@ -17,6 +17,13 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 34, 43, 170),
@@ -133,16 +140,26 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _signupBtn() {
-    return TextButton(
+    return ElevatedButton(
       onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const SignUpPage()),
         );
       },
-      child: const Text(
-        "Sign Up",
-        style: TextStyle(color: Colors.white, fontSize: 16),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.orange,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+      ),
+      child: const SizedBox(
+        width: 150, // Adjust the width as needed
+        child: Text(
+          "Sign Up",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
@@ -162,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
         _errorMessage = 'Username and password cannot be empty';
       });
 
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _errorMessage = '';
         });
@@ -171,14 +188,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    bool isAuthenticated =
-        await MongoDatabase.authenticateUser(username, password);
+    int isAuthenticated = await MongoDatabase.authenticateUser(username, password);
 
     setState(() {
       _isLoading = false;
     });
 
-    if (isAuthenticated) {
+    if (isAuthenticated == 0) {
       var user = await MongoDatabase.getUser(username);
       if (user != null) {
         Navigator.pushReplacement(
@@ -188,12 +204,22 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       }
+    } else if (isAuthenticated == 1) {
+      setState(() {
+        _errorMessage = 'User is already logged in';
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
     } else {
       setState(() {
         _errorMessage = 'Invalid username or password';
       });
 
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _errorMessage = '';
         });
