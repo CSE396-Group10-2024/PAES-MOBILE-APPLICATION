@@ -1,80 +1,95 @@
 import 'package:cengproject/VideoStreamPage.dart';
+import 'package:cengproject/dbhelper/mongodb.dart';
 import 'exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'patient_information.dart';
 
 class PatientProfile extends StatelessWidget {
-  final Map<String, dynamic> patient;
+  final String patientId;
 
-  const PatientProfile({super.key, required this.patient});
+  const PatientProfile({super.key, required this.patientId});
 
   @override
   Widget build(BuildContext context) {
-    // Determine the background color based on the gender
-    Color backgroundColor = patient['gender'] == 'male' ? const Color(0xFF005092) : const Color(0xFFFFC1E3);
-
     return Scaffold(
       appBar: appBar(context), // Back button
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 4,
-            child: Container(
-              decoration: BoxDecoration(
-                color: backgroundColor, // Set the background color based on gender
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "${patient['room_number']}",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+      body: StreamBuilder<Map<String, dynamic>>(
+        stream: MongoDatabase.getPatientByIdStream(patientId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text('No patient data found'));
+          } else {
+            var patient = snapshot.data!;
+            // Determine the background color based on the gender
+            Color backgroundColor = patient['gender'] == 'male' ? const Color(0xFF005092) : const Color(0xFFFFC1E3);
+
+            return Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: backgroundColor, // Set the background color based on gender
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    PatientInfo(patient: patient),
-                  ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "${patient['room_number']}",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          PatientInfo(patient: patient),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: 150, // Adjust the height as needed
-                    child: Row(
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: ExerciseCard(patient: patient)), // Stretch the ExerciseCard
+                        SizedBox(
+                          height: 150, // Adjust the height as needed
+                          child: Row(
+                            children: [
+                              Expanded(child: ExerciseCard(patient: patient)), // Stretch the ExerciseCard
+                            ],
+                          ),
+                        ),
+                        _callButton(context, patient), // Add call button at the bottom
                       ],
                     ),
                   ),
-                  _callButton(context), // Add call button at the bottom
-                ],
-              ),
-            ),
-          ),
-        ],
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
@@ -91,7 +106,7 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  Widget _callButton(BuildContext context) {
+  Widget _callButton(BuildContext context, Map<String, dynamic> patient) {
     return ElevatedButton.icon(
       onPressed: () {
         Navigator.push(
