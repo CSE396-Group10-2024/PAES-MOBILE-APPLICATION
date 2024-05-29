@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cengproject/add_patient.dart';
 import 'package:cengproject/patientProfile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cengproject/dbhelper/mongodb.dart';
+import 'package:rxdart/rxdart.dart';
 
 class HomePage extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -14,23 +17,46 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late List<StreamSubscription> _subscriptions;
+
   @override
   void initState() {
     super.initState();
-    _startVideoConnectionRequestStream();
+    _subscriptions = [];
+    _startCombinedStreams();
   }
 
-  void _startVideoConnectionRequestStream() {
+  void _startCombinedStreams() {
     for (String patientId in widget.user['care_patients']) {
-      MongoDatabase.checkVideoConnectionRequest(patientId).listen((_) {
-        // Stream is managed here, no need to update UI directly
+      var videoConnectionStream = MongoDatabase.checkVideoConnectionRequest(patientId);
+      var resetExercisesStream = MongoDatabase.resetExercisesStream(patientId);
+
+      var combinedStream = MergeStream([videoConnectionStream, resetExercisesStream]);
+      
+      var subscription = combinedStream.listen((event) {
+        // Handle the combined stream events here
+        // For example, you might want to trigger some UI updates or other actions
       });
+
+      _subscriptions.add(subscription);
     }
   }
 
-  Future<void> _quitApp() async {
+  Future<void> _logout() async {
+    // Set the caregiver's online status to false
+    await MongoDatabase.setUserOffline(widget.user['_id'].toHexString());
     await MongoDatabase.disconnect();
     SystemNavigator.pop();
+  }
+
+  @override
+  void dispose() {
+    // Ensure any streams or resources are properly closed
+    for (var subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _logout();
+    super.dispose();
   }
 
   @override
@@ -44,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: ElevatedButton(
-              onPressed: _quitApp,
+              onPressed: _logout,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
                 backgroundColor: Colors.red,
