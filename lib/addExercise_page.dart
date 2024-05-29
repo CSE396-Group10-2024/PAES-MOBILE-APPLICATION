@@ -1,4 +1,4 @@
-// ignore: file_names
+import 'package:cengproject/dbhelper/mongodb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +26,33 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
     });
   }
 
+  Future<void> _assignExercises() async {
+    String patientId = widget.patient['_id'].toHexString();
+    var result = await MongoDatabase.assignRepsToExercises(patientId, _exerciseReps);
+
+    if (result['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Exercises assigned successfully.')),
+      );
+      Navigator.of(context).pop();
+    } else {
+      String errorMessage;
+      switch (result['status']) {
+        case 1:
+          errorMessage = 'All reps are zero. Please assign at least one rep.';
+          break;
+        case 2:
+          errorMessage = 'Failed to assign exercises. Please try again.';
+          break;
+        default:
+          errorMessage = 'An unknown error occurred. Please try again.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +64,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: _assignExercises,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(
