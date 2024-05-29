@@ -15,6 +15,13 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   String _errorMessage = '';
 
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _signUp() async {
     setState(() {
       _isLoading = true;
@@ -30,7 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _errorMessage = 'Username and password cannot be empty';
       });
 
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _errorMessage = '';
         });
@@ -47,6 +54,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (isCreated) {
       // Navigate to LoginPage
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User created successfully.')),
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -56,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _errorMessage = 'Username already exists';
       });
 
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _errorMessage = '';
         });
