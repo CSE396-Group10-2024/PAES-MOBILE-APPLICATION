@@ -67,6 +67,11 @@ Select a patient to assign exercises. Choose from predefined exercise routines o
 ### Authentication
 Log in to the app using your credentials. If you don’t have an account, sign up using the registration feature.
 
+## Usage Instructions
+
+### Authentication
+Log in to the app using your credentials. If you don’t have an account, sign up using the registration feature.
+
 **Login Screen:**
 ![Login Screenshot](readme_images/login.png)
 
@@ -99,4 +104,3 @@ Monitor patient progress through a live video stream.
 
 **Therapy In Progress Screenshot:**
 ![Therapy In Progress Screenshot](readme_images/therapy_in_progress.png)
-
