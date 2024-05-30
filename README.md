@@ -13,7 +13,7 @@ Technologies Used
 
     Framework: Flutter
     Database: MongoDB
-    Authentication: Firebase
+    Authentication: MongoDB
 
 Setup Instructions
 Prerequisites
@@ -37,9 +37,6 @@ sh
 
 flutter pub get
 
-Configure Firebase:
-
-    Follow the FlutterFire documentation to set up Firebase for your Flutter project.
 
 Run the application:
 
@@ -66,3 +63,34 @@ Assigning Exercises
 Select a patient to assign exercises. Choose from predefined exercise routines or create custom ones.
 
 Screenshots:
+import shutil
+
+# Define file paths for the uploaded screenshots
+uploaded_files = [
+    "/mnt/data/Screenshot_1717055394.png",
+    "/mnt/data/Screenshot_1717055402.png",
+    "/mnt/data/Screenshot_1717055419.png",
+    "/mnt/data/Screenshot_1717055425.png",
+    "/mnt/data/Screenshot_1717055432.png",
+    "/mnt/data/Screenshot_1717055439.png",
+    "/mnt/data/Screenshot_1717055454.png"
+]
+
+# Define destination paths for the screenshots to be used in the README
+destination_paths = [
+    "/mnt/data/readme_images/login.png",
+    "/mnt/data/readme_images/signup.png",
+    "/mnt/data/readme_images/homepage.png",
+    "/mnt/data/readme_images/patient_profile.png",
+    "/mnt/data/readme_images/add_exercises.png",
+    "/mnt/data/readme_images/video_stream.png",
+    "/mnt/data/readme_images/therapy_in_progress.png"
+]
+
+# Move the uploaded files to the new paths
+for src, dest in zip(uploaded_files, destination_paths):
+    shutil.move(src, dest)
+
+# Output the destination paths to verify the move
+destination_paths
+
