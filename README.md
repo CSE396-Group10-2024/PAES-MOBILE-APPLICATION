@@ -13,14 +13,12 @@ Technologies Used
 
     Framework: Flutter
     Database: MongoDB
-    Authentication: MongoDB
 
 Setup Instructions
 Prerequisites
 
     Flutter SDK
     MongoDB instance
-    Firebase account
 
 Installation
 
