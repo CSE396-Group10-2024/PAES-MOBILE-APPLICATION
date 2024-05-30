@@ -20,10 +20,10 @@ class HomePage extends StatelessWidget {
     String caregiverId = user['_id'].toHexString();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Home Page'),
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app),
             onPressed: () async {
               await _quitApp();
             },
@@ -39,12 +39,12 @@ class HomePage extends StatelessWidget {
           Expanded(
             flex: 5,
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: MongoDatabase.getCarePatientsStream(caregiverId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
@@ -75,21 +75,23 @@ class HomePage extends StatelessWidget {
 }
 
 class NotificationCard extends StatelessWidget {
+  const NotificationCard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NotificationPage()),
+          MaterialPageRoute(builder: (context) => const NotificationPage()),
         );
       },
       child: Card(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             children: List.generate(2, (index) {
-              return ListTile(
+              return const ListTile(
                 title: Text('BED # Notification Description'),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +113,7 @@ class GridItem extends StatelessWidget {
   final String title;
   final Widget destinationPage;
 
-  const GridItem({required this.title, required this.destinationPage});
+  const GridItem({super.key, required this.title, required this.destinationPage});
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,7 @@ class GridItem extends StatelessWidget {
         );
       },
       child: Card(
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: Center(
           child: Text(title),
         ),

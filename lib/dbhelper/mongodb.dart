@@ -75,7 +75,7 @@ class MongoDatabase {
         print('An error occurred while fetching care patients: $e');
         yield [];
       }
-      await Future.delayed(Duration(seconds: 5)); // Fetch new data every 5 seconds
+      await Future.delayed(const Duration(seconds: 5)); // Fetch new data every 5 seconds
     }
   }
 

@@ -9,6 +9,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,13 +20,15 @@ class MyApp extends StatelessWidget {
 }
 
 class VideoStreamPage extends StatefulWidget {
+  const VideoStreamPage({super.key});
+
   @override
   _VideoStreamPageState createState() => _VideoStreamPageState();
 }
 
 class _VideoStreamPageState extends State<VideoStreamPage> {
   List<int> _videoBytes = [];
-  StreamController<ui.Image> _imageStreamController = StreamController<ui.Image>.broadcast();
+  final StreamController<ui.Image> _imageStreamController = StreamController<ui.Image>.broadcast();
   late Socket _socket;
   bool _processing = false;
   bool _isConnected = false;
@@ -97,11 +101,11 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Video Stream'),
+        title: const Text('Patient Video Stream'),
         automaticallyImplyLeading: false,  // This removes the default back button on the left
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -116,7 +120,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
             if (snapshot.hasData) {
               return Center(
                 child: CustomPaint(
-                  size: Size(300, 200),
+                  size: const Size(300, 200),
                   painter: ImagePainter(image: snapshot.data!),
                 ),
               );
@@ -124,11 +128,11 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
               return Text('Error: ${snapshot.error}');
             }
             else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         )
-            : Text('No connection'),
+            : const Text('No connection'),
       ),
     );
   }

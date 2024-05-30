@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'addExercise_page.dart'; // Import the AddExercisesPage
 
 class ExerciseCard extends StatelessWidget {
-  const ExerciseCard();
+  const ExerciseCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class ExerciseCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
+                const Expanded(
                   child: Text(
                     "Physical Therapy Program",
                     style: TextStyle(fontSize: 19, color: Colors.black),
@@ -33,23 +33,23 @@ class ExerciseCard extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => AddExercisesPage()),
                     );
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.edit,
                     color: Colors.black,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10), // Add some space between text and progress bar
+            const SizedBox(height: 10), // Add some space between text and progress bar
             Text(
               "Today's Progress",
               style: TextStyle(fontSize: 16, color: Colors.grey[700]),
             ),
-            SizedBox(height: 10), // Add some space between text and progress bar
+            const SizedBox(height: 10), // Add some space between text and progress bar
             LinearProgressIndicator(
               value: 0.5, // Set the progress value here (between 0.0 and 1.0)
               backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
           ],
         ),

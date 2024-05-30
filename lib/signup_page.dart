@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
@@ -32,7 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
       // Navigate to LoginPage
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } else {
       setState(() {
@@ -51,9 +53,9 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: const Text('Sign Up'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -84,11 +86,11 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 20),
               _inputField("Password", passwordController, isPassword: true),
               const SizedBox(height: 10),
-              if (_isLoading) CircularProgressIndicator(),
+              if (_isLoading) const CircularProgressIndicator(),
               if (_errorMessage.isNotEmpty) ...[
                 Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -126,10 +128,10 @@ class _SignUpPageState extends State<SignUpPage> {
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.grey,
         backgroundColor: Colors.white,
-        shape: StadiumBorder(),
-        padding: EdgeInsets.symmetric(vertical: 16),
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
-      child: SizedBox(
+      child: const SizedBox(
         width: double.infinity,
         child: Text(
           "Sign Up",

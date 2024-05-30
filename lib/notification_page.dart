@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NotificationPage extends StatelessWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+  const NotificationPage({super.key});
 
   @override
   Widget build(BuildContext context){
@@ -13,7 +13,7 @@ class NotificationPage extends StatelessWidget {
 
   PreferredSizeWidget appBar(){
     return AppBar(
-      title: Text('Patient Notification'),
+      title: const Text('Patient Notification'),
     );
   }
 
@@ -23,14 +23,14 @@ class NotificationPage extends StatelessWidget {
       return listViewItem(index);
     },
     separatorBuilder: (context, index){
-      return Divider(height: 10);
+      return const Divider(height: 10);
     },
     itemCount: 15);
   }
 
   Widget listViewItem(int index){
     return Container(
-      margin: EdgeInsets.only(left:10),
+      margin: const EdgeInsets.only(left:10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,7 +54,7 @@ class NotificationPage extends StatelessWidget {
             color: Colors.black,
             fontWeight: FontWeight.bold
           ),
-          children: [
+          children: const [
             TextSpan(
               text: 'Notification Description',
               style: TextStyle(
@@ -69,8 +69,8 @@ class NotificationPage extends StatelessWidget {
 
   Widget timeAndDate(int index){
     return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: Row(
+      margin: const EdgeInsets.only(top: 5),
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(

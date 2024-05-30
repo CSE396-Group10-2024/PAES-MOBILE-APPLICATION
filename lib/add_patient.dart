@@ -62,7 +62,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
     // Clear the error message after 5 seconds
     if (_errorMessage.isNotEmpty) {
-      Future.delayed(Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 5), () {
         setState(() {
           _errorMessage = '';
         });
@@ -74,7 +74,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Patient'),
+        title: const Text('Add Patient'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,13 +82,13 @@ class _AddPatientPageState extends State<AddPatientPage> {
           children: [
             _inputField("Patient Number", _patientNumberController),
             const SizedBox(height: 32),
-            _isLoading ? CircularProgressIndicator() : _addButton(),
+            _isLoading ? const CircularProgressIndicator() : _addButton(),
             if (_errorMessage.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
           ],
@@ -112,7 +112,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
   Widget _addButton() {
     return ElevatedButton(
       onPressed: _addPatient,
-      child: Text('Add Patient'),
+      child: const Text('Add Patient'),
     );
   }
 }
