@@ -62,35 +62,45 @@ Assigning Exercises
 
 Select a patient to assign exercises. Choose from predefined exercise routines or create custom ones.
 
-Screenshots:
-import shutil
+## Usage Instructions
 
-# Define file paths for the uploaded screenshots
-uploaded_files = [
-    "/mnt/data/Screenshot_1717055394.png",
-    "/mnt/data/Screenshot_1717055402.png",
-    "/mnt/data/Screenshot_1717055419.png",
-    "/mnt/data/Screenshot_1717055425.png",
-    "/mnt/data/Screenshot_1717055432.png",
-    "/mnt/data/Screenshot_1717055439.png",
-    "/mnt/data/Screenshot_1717055454.png"
-]
+### Authentication
+Log in to the app using your credentials. If you don’t have an account, sign up using the registration feature.
 
-# Define destination paths for the screenshots to be used in the README
-destination_paths = [
-    "/mnt/data/readme_images/login.png",
-    "/mnt/data/readme_images/signup.png",
-    "/mnt/data/readme_images/homepage.png",
-    "/mnt/data/readme_images/patient_profile.png",
-    "/mnt/data/readme_images/add_exercises.png",
-    "/mnt/data/readme_images/video_stream.png",
-    "/mnt/data/readme_images/therapy_in_progress.png"
-]
+## Usage Instructions
 
-# Move the uploaded files to the new paths
-for src, dest in zip(uploaded_files, destination_paths):
-    shutil.move(src, dest)
+### Authentication
+Log in to the app using your credentials. If you don’t have an account, sign up using the registration feature.
 
-# Output the destination paths to verify the move
-destination_paths
+**Login Screen:**
+![Login Screenshot](readme_images/login.png)
 
+**Sign Up Screen:**
+![Sign Up Screenshot](readme_images/signup.png)
+
+### Dashboard
+Upon logging in, you will see a dashboard displaying notifications and patient information.
+
+**Dashboard Screenshot:**
+![Dashboard Screenshot](readme_images/homepage.png)
+
+### Patient Management
+Navigate to the patient list to view and manage patients. Add new patients or update existing patient information.
+
+**Patient Management Screenshot:**
+![Patient Profile Screenshot](readme_images/patient_profile.png)
+
+### Assigning Exercises
+Select a patient to assign exercises. Choose from predefined exercise routines or create custom ones.
+
+**Assign Exercises Screenshot:**
+![Assign Exercises Screenshot](readme_images/add_exercises.png)
+
+### Video Stream
+Monitor patient progress through a live video stream.
+
+**Video Stream Screenshot:**
+![Video Stream Screenshot](readme_images/video_stream.png)
+
+**Therapy In Progress Screenshot:**
+![Therapy In Progress Screenshot](readme_images/therapy_in_progress.png)
