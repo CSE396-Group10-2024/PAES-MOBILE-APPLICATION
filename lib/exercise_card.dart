@@ -17,10 +17,22 @@ class _ExerciseCardState extends State<ExerciseCard> {
     bool isCompleted = widget.patient['are_exercises_completed'] ?? false;
     String statusText = "UNASSIGNED";
     IconData icon = Icons.edit;
+    double progress = 0.0;
 
     if (isAssigned && !isCompleted) {
       statusText = "IN PROGRESS...";
       icon = Icons.build;
+      
+      num totalAssigned = 0;
+      num totalRepeated = 0;
+      widget.patient['todays_exercises'].forEach((key, value) {
+        totalAssigned += value['assigned_number'];
+        totalRepeated += value['repeated_number'];
+      });
+
+      if (totalAssigned > 0) {
+        progress = totalRepeated / totalAssigned;
+      }
     }
 
     return GestureDetector(
@@ -66,6 +78,13 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 textAlign: TextAlign.center, // Center the text
                 style: TextStyle(fontSize: 16, color: Colors.grey[700]),
               ),
+              const SizedBox(height: 10), // Add some space between text and progress indicator
+              if (isAssigned && !isCompleted) // Show progress indicator only if exercises are assigned and not completed
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
             ],
           ),
         ),
