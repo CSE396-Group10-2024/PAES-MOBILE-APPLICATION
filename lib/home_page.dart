@@ -1,10 +1,9 @@
 import 'dart:async';
-
-import 'package:cengproject/add_patient.dart';
-import 'package:cengproject/patientProfile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cengproject/dbhelper/mongodb.dart';
+import 'package:cengproject/add_patient.dart';
+import 'package:cengproject/patientProfile_page.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,12 +15,13 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late List<StreamSubscription> _subscriptions;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _subscriptions = [];
     _startCombinedStreams();
   }
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       var resetExercisesStream = MongoDatabase.resetExercisesStream(patientId);
 
       var combinedStream = MergeStream([videoConnectionStream, resetExercisesStream]);
-      
+
       var subscription = combinedStream.listen((event) {
         // Handle the combined stream events here
         // For example, you might want to trigger some UI updates or other actions
@@ -55,8 +55,21 @@ class _HomePageState extends State<HomePage> {
     for (var subscription in _subscriptions) {
       subscription.cancel();
     }
+    WidgetsBinding.instance.removeObserver(this);
     _logout();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.detached || state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _setUserOffline();
+    }
+  }
+
+  Future<void> _setUserOffline() async {
+    await MongoDatabase.setUserOffline(widget.user['_id'].toHexString());
   }
 
   @override
@@ -125,15 +138,20 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class NotificationCard extends StatelessWidget {
+class NotificationCard extends StatefulWidget {
   final String caregiverId;
 
   const NotificationCard({super.key, required this.caregiverId});
 
   @override
+  _NotificationCardState createState() => _NotificationCardState();
+}
+
+class _NotificationCardState extends State<NotificationCard> {
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: MongoDatabase.getNotifications(caregiverId),
+      stream: MongoDatabase.getNotifications(widget.caregiverId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
