@@ -8,6 +8,7 @@ import 'patient_information.dart';
 class PatientProfile extends StatefulWidget {
   final String patientId;
 
+<<<<<<< HEAD
   const PatientProfile({super.key, required this.patientId});
 
   @override
@@ -26,6 +27,9 @@ class _PatientProfileState extends State<PatientProfile> {
       // Handle any additional logic if needed, for now, it just starts the stream.
     });
   }
+=======
+  const PatientProfile({super.key, required this.patient});
+>>>>>>> main
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +77,29 @@ class _PatientProfileState extends State<PatientProfile> {
                                 color: Colors.white,
                               ),
                             ),
+<<<<<<< HEAD
                           ),
                           const SizedBox(height: 16),
                           PatientInfo(patient: patient),
+=======
+                            PatientInfo(patient: patient),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Container(
+                  color: Colors.white,
+                  child: Table(
+                    children: const [
+                      TableRow(
+                        children: [
+                          ExerciseCard(),
+>>>>>>> main
                         ],
                       ),
                     ),
@@ -122,6 +146,7 @@ class _PatientProfileState extends State<PatientProfile> {
 
   PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(
+<<<<<<< HEAD
       backgroundColor: Colors.transparent,
       elevation: 0,
       iconTheme: const IconThemeData(color: Colors.black),
@@ -154,6 +179,20 @@ class _PatientProfileState extends State<PatientProfile> {
         backgroundColor: Colors.green,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
+=======
+      title: const Text('Patient Profile'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.camera_alt_outlined),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoStreamPage(),
+              ),
+            );
+          },
+>>>>>>> main
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),

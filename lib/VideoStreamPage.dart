@@ -3,12 +3,33 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+<<<<<<< HEAD
 import 'package:cengproject/dbhelper/mongodb.dart'; // Ensure this import points to your MongoDB helper
 
 class VideoStreamPage extends StatefulWidget {
   final String patientNumber;
 
   const VideoStreamPage({super.key, required this.patientNumber});
+=======
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: VideoStreamPage(),
+    );
+  }
+}
+
+class VideoStreamPage extends StatefulWidget {
+  const VideoStreamPage({super.key});
+>>>>>>> main
 
   @override
   _VideoStreamPageState createState() => _VideoStreamPageState();
@@ -17,7 +38,11 @@ class VideoStreamPage extends StatefulWidget {
 class _VideoStreamPageState extends State<VideoStreamPage> {
   List<int> _videoBytes = [];
   final StreamController<ui.Image> _imageStreamController = StreamController<ui.Image>.broadcast();
+<<<<<<< HEAD
   Socket? _socket;
+=======
+  late Socket _socket;
+>>>>>>> main
   bool _processing = false;
   bool _isConnected = false;
   String _connectionError = '';
@@ -146,6 +171,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -190,6 +216,42 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
           child: const Icon(Icons.call_end),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+=======
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Patient Video Stream'),
+        automaticallyImplyLeading: false,  // This removes the default back button on the left
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: _isConnected
+        ? StreamBuilder<ui.Image>(
+          stream: _imageStreamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Center(
+                child: CustomPaint(
+                  size: const Size(300, 200),
+                  painter: ImagePainter(image: snapshot.data!),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            else {
+              return const CircularProgressIndicator();
+            }
+          },
+        )
+            : const Text('No connection'),
+>>>>>>> main
       ),
     );
   }

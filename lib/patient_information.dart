@@ -7,6 +7,7 @@ class PatientInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     // Extract patient information and convert to uppercase
     String surname = (patient['surname'] ?? 'SURNAME').toUpperCase();
     String firstName = (patient['name'] ?? 'FIRST NAME').toUpperCase();
@@ -28,6 +29,37 @@ class PatientInfo extends StatelessWidget {
         ),
         const SizedBox(height: 10),
       ],
+=======
+    return Expanded(
+      child: Column(
+        children: [
+          _icon(),
+          const SizedBox(height: 10),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "SURNAME, First Name",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "| [GENDER]   |  [BLOOD TYPE] |",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              )
+            ],
+          )
+        ],
+      ),
+>>>>>>> main
     );
   }
 
@@ -39,7 +71,12 @@ class PatientInfo extends StatelessWidget {
       assetPath = 'images/female_icon.png';
     }
     return Container(
+<<<<<<< HEAD
       decoration: BoxDecoration(
+=======
+      child: const Icon(
+        Icons.account_circle,
+>>>>>>> main
         color: Colors.white,
         shape: BoxShape.circle,
         boxShadow: [

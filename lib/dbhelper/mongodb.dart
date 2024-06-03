@@ -112,6 +112,7 @@ class MongoDatabase {
         }
         yield [];
       }
+<<<<<<< HEAD
       await Future.delayed(const Duration(seconds: 10)); // Refresh every 10 seconds
     }
   }
@@ -138,6 +139,9 @@ class MongoDatabase {
         yield [];
       }
       await Future.delayed(const Duration(seconds: 7)); // Refresh every 7 seconds
+=======
+      await Future.delayed(const Duration(seconds: 5)); // Fetch new data every 5 seconds
+>>>>>>> main
     }
   }
 

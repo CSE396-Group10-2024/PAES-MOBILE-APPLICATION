@@ -148,10 +148,17 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
       style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
         foregroundColor: Colors.white,
         backgroundColor: Colors.orange,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(vertical: 12),
+=======
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+>>>>>>> main
       ),
       child: const SizedBox(
         width: 150, // Adjust the width as needed

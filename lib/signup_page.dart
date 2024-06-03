@@ -78,9 +78,28 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+=======
+        title: const Text('Sign Up'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _page(),
+        ),
+>>>>>>> main
       ),
       backgroundColor: const Color.fromARGB(255, 34, 43, 170),
       body: _page(),
@@ -99,9 +118,15 @@ class _SignUpPageState extends State<SignUpPage> {
               _inputField("Username", usernameController),
               const SizedBox(height: 20),
               _inputField("Password", passwordController, isPassword: true),
+<<<<<<< HEAD
               const SizedBox(height: 30),
               if (_isLoading) const CircularProgressIndicator(),
               if (_errorMessage.isNotEmpty)
+=======
+              const SizedBox(height: 10),
+              if (_isLoading) const CircularProgressIndicator(),
+              if (_errorMessage.isNotEmpty) ...[
+>>>>>>> main
                 Text(
                   _errorMessage,
                   style: const TextStyle(color: Colors.red),
@@ -142,9 +167,15 @@ class _SignUpPageState extends State<SignUpPage> {
     return ElevatedButton(
       onPressed: _signUp,
       style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
         foregroundColor: Colors.white,
         backgroundColor: const Color.fromARGB(255, 18, 170, 13),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+=======
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.white,
+        shape: const StadiumBorder(),
+>>>>>>> main
         padding: const EdgeInsets.symmetric(vertical: 16),
       ),
       child: const SizedBox(

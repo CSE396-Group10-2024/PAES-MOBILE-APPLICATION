@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddExercisesPage extends StatefulWidget {
+<<<<<<< HEAD
   final Map<String, dynamic> patient;
 
   const AddExercisesPage({super.key, required this.patient});
+=======
+  const AddExercisesPage({super.key});
+>>>>>>> main
 
   @override
   _AddExercisesPageState createState() => _AddExercisesPageState();
@@ -57,6 +61,7 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         backgroundColor: const Color.fromARGB(255, 34, 43, 170),
         title: const Text('Add Exercises', style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -77,6 +82,22 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
               ),
             ),
           ),
+=======
+        title: const Text('Add Exercises'),
+      ),
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: [
+          _exerciseCard('Arm Raises (Left)'),
+          _exerciseCard('Arm Raises (Right)'),
+
+          _exerciseCard('Wrist Rotation (Left)'),
+          _exerciseCard('Wrist Rotation (Right)'),
+
+          _exerciseCard('Leg Raises (Left)'),
+          _exerciseCard('Leg Raises (Right)'),
+          _exerciseCard('Neck Rotation'),
+>>>>>>> main
         ],
       ),
       backgroundColor: const Color.fromARGB(255, 34, 43, 170),
@@ -101,12 +122,16 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
 
   Widget _exerciseCard(String exerciseName) {
     return Card(
+<<<<<<< HEAD
       color: Colors.white.withOpacity(0.3),
+=======
+>>>>>>> main
       margin: const EdgeInsets.all(10),
       elevation: 7,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
+<<<<<<< HEAD
       child: InkWell(
         onTap: () {
           _showRepsDialog(context, exerciseName);
@@ -143,6 +168,24 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
             ],
           ),
         ),
+=======
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            exerciseName,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              _showRepsDialog(context, exerciseName);
+            },
+            iconSize: 40,
+          ),
+        ],
+>>>>>>> main
       ),
     );
   }
@@ -166,9 +209,12 @@ class _AddExercisesPageState extends State<AddExercisesPage> {
                   onChanged: (value) {
                     reps = int.tryParse(value) ?? 0;
                   },
+<<<<<<< HEAD
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
+=======
+>>>>>>> main
                   decoration: const InputDecoration(
                     labelText: 'Reps',
                     hintText: 'Enter the number of reps',

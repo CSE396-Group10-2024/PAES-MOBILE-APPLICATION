@@ -91,12 +91,19 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
     // Clear the error message after 2 seconds
     if (_errorMessage.isNotEmpty) {
+<<<<<<< HEAD
       _delayedFuture = Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
           setState(() {
             _errorMessage = '';
           });
         }
+=======
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          _errorMessage = '';
+        });
+>>>>>>> main
       });
     }
   }
@@ -113,12 +120,16 @@ class _AddPatientPageState extends State<AddPatientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: const Text(
           'Add Patient',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 34, 43, 170),
         iconTheme: const IconThemeData(color: Colors.white),
+=======
+        title: const Text('Add Patient'),
+>>>>>>> main
       ),
       backgroundColor: const Color.fromARGB(255, 34, 43, 170),
       body: Padding(
@@ -166,6 +177,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
   Widget _addButton() {
     return ElevatedButton(
       onPressed: _addPatient,
+<<<<<<< HEAD
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
         backgroundColor: const Color.fromARGB(255, 18, 170, 13),
@@ -180,6 +192,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
+=======
+      child: const Text('Add Patient'),
+>>>>>>> main
     );
   }
 }

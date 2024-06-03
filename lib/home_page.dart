@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     String caregiverId = widget.user['_id'].toHexString();
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: const Text('Home Page', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 34, 43, 170),
         actions: [
@@ -90,6 +91,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ),
               child: const Text('EXIT', style: TextStyle(color: Colors.black)),
             ),
+=======
+        title: const Text('Home Page'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () async {
+              await _quitApp();
+            },
+>>>>>>> main
           ),
         ],
       ),
@@ -138,6 +148,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 }
 
+<<<<<<< HEAD
 class NotificationCard extends StatefulWidget {
   final String caregiverId;
 
@@ -200,6 +211,39 @@ class _NotificationCardState extends State<NotificationCard> {
           );
         }
       },
+=======
+class NotificationCard extends StatelessWidget {
+  const NotificationCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const NotificationPage()),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: List.generate(2, (index) {
+              return const ListTile(
+                title: Text('BED # Notification Description'),
+                subtitle: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('03-05-2024', style: TextStyle(fontSize: 10)),
+                    Text('13:30', style: TextStyle(fontSize: 10)),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+>>>>>>> main
     );
   }
 }
@@ -220,7 +264,10 @@ class GridItem extends StatelessWidget {
         );
       },
       child: Card(
+<<<<<<< HEAD
         color: Colors.white.withOpacity(0.3),
+=======
+>>>>>>> main
         margin: const EdgeInsets.all(8),
         child: Center(
           child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 18)),
