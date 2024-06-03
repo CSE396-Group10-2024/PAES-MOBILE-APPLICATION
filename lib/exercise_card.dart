@@ -22,12 +22,14 @@ class _ExerciseCardState extends State<ExerciseCard> {
     if (isAssigned && !isCompleted) {
       statusText = "IN PROGRESS...";
       icon = Icons.build;
-      
+
       num totalAssigned = 0;
       num totalRepeated = 0;
       widget.patient['todays_exercises'].forEach((key, value) {
         totalAssigned += value['assigned_number'];
-        totalRepeated += value['repeated_number'];
+        totalRepeated += value['repeated_number'] >= value['assigned_number']
+            ? value['assigned_number']
+            : value['repeated_number'];
       });
 
       if (totalAssigned > 0) {
@@ -41,7 +43,9 @@ class _ExerciseCardState extends State<ExerciseCard> {
           : () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddExercisesPage(patient: widget.patient)),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AddExercisesPage(patient: widget.patient)),
               );
             },
       child: Card(
@@ -53,8 +57,10 @@ class _ExerciseCardState extends State<ExerciseCard> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
-            crossAxisAlignment: CrossAxisAlignment.center, // Center the content horizontally
+            mainAxisAlignment:
+                MainAxisAlignment.center, // Center the content vertically
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Center the content horizontally
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,14 +78,19 @@ class _ExerciseCardState extends State<ExerciseCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10), // Add some space between text and the next element
+              const SizedBox(
+                  height:
+                      10), // Add some space between text and the next element
               Text(
                 statusText,
                 textAlign: TextAlign.center, // Center the text
                 style: TextStyle(fontSize: 16, color: Colors.grey[700]),
               ),
-              const SizedBox(height: 10), // Add some space between text and progress indicator
-              if (isAssigned && !isCompleted) // Show progress indicator only if exercises are assigned and not completed
+              const SizedBox(
+                  height:
+                      10), // Add some space between text and progress indicator
+              if (isAssigned &&
+                  !isCompleted) // Show progress indicator only if exercises are assigned and not completed
                 LinearProgressIndicator(
                   value: progress,
                   backgroundColor: Colors.grey[300],
