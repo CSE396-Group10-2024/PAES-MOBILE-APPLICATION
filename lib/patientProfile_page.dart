@@ -1,6 +1,7 @@
 import 'package:cengproject/VideoStreamPage.dart';
 import 'package:cengproject/dbhelper/mongodb.dart';
 import 'exercise_card.dart';
+import 'exercise_info_card.dart'; // Import the ExerciseInfoCard
 import 'package:flutter/material.dart';
 import 'patient_information.dart';
 
@@ -95,6 +96,14 @@ class _PatientProfileState extends State<PatientProfile> {
                           child: Row(
                             children: [
                               Expanded(child: ExerciseCard(patient: patient)), // Stretch the ExerciseCard
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 150, // Adjust the height as needed
+                          child: Row(
+                            children: [
+                              Expanded(child: ExerciseInfoCard(patientId: widget.patientId)), // Stretch the ExerciseInfoCard
                             ],
                           ),
                         ),
