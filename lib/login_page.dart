@@ -13,20 +13,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  // ignore: unused_field
   bool _isLoading = false;
   String _errorMessage = '';
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.grey,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: _page(),
-      ),
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 34, 43, 170),
+      body: _page(),
     );
   }
 
@@ -39,10 +40,14 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _icon(),
+              const SizedBox(height: 20),
+              _title(),
+              const SizedBox(height: 30),
               _inputField("Username", usernameController),
               const SizedBox(height: 20),
               _inputField("Password", passwordController, isPassword: true),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
+              if (_isLoading) const CircularProgressIndicator(),
               _loginBtn(),
               const SizedBox(height: 20),
               if (_errorMessage.isNotEmpty)
@@ -50,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   _errorMessage,
                   style: const TextStyle(color: Colors.red),
                 ),
-              const SizedBox(height: 200),
+              const SizedBox(height: 30),
               _extraText(),
               const SizedBox(height: 10),
               _signupBtn(),
@@ -62,19 +67,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _icon() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width: 2),
-        shape: BoxShape.circle,
+    final mq = MediaQuery.of(context).size;
+    return Image.asset(
+      'images/PAES.png',
+      width: mq.width * 0.7,
+      height: mq.height * 0.3,
+    );
+  }
+
+  Widget _title() {
+    return const Text(
+      'PAES',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1,
       ),
-      child: const Icon(Icons.person, color: Colors.white, size: 120),
     );
   }
 
   Widget _inputField(String hintText, TextEditingController controller,
       {bool isPassword = false}) {
     var border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
       borderSide: const BorderSide(color: Colors.white, width: 2),
     );
 
@@ -82,10 +99,13 @@ class _LoginPageState extends State<LoginPage> {
       style: const TextStyle(color: Colors.white),
       controller: controller,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.3),
         hintText: hintText,
         hintStyle: const TextStyle(color: Colors.white),
         enabledBorder: border,
         focusedBorder: border,
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       ),
       obscureText: isPassword,
     );
@@ -95,15 +115,15 @@ class _LoginPageState extends State<LoginPage> {
     return ElevatedButton(
       onPressed: _login,
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.blue,
-        backgroundColor: Colors.white,
-        shape: const StadiumBorder(),
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 18, 170, 13),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(vertical: 16),
       ),
       child: const SizedBox(
         width: double.infinity,
         child: Text(
-          "Login",
+          "LOGIN",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20),
         ),
@@ -113,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _extraText() {
     return const Text(
-      "Don't have an account?",
+      "Don't have an account? Sign Up",
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 16, color: Colors.white),
     );
@@ -124,21 +144,28 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignUpPage()),
+          MaterialPageRoute(builder: (context) => const SignUpPage()),
         );
       },
       style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.orange,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+=======
         foregroundColor: Colors.grey,
         backgroundColor: Colors.white,
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 16),
+>>>>>>> main
       ),
       child: const SizedBox(
-        width: double.infinity,
+        width: 150, // Adjust the width as needed
         child: Text(
           "Sign Up",
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );
@@ -153,35 +180,53 @@ class _LoginPageState extends State<LoginPage> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    bool isAuthenticated =
-        await MongoDatabase.authenticateUser(username, password);
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Username and password cannot be empty';
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
+
+      return;
+    }
+
+    int isAuthenticated = await MongoDatabase.authenticateUser(username, password);
 
     setState(() {
       _isLoading = false;
     });
 
-    if (isAuthenticated) {
-      // Fetch the user information
+    if (isAuthenticated == 0) {
       var user = await MongoDatabase.getUser(username);
-  
-      // Fetch the patients associated with the user
       if (user != null) {
-        // Navigate to HomePage
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                HomePage(user: user),
+            builder: (context) => HomePage(user: user),
           ),
         );
       }
+    } else if (isAuthenticated == 1) {
+      setState(() {
+        _errorMessage = 'User is already logged in';
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          _errorMessage = '';
+        });
+      });
     } else {
       setState(() {
         _errorMessage = 'Invalid username or password';
       });
 
-      // Clear the error message after 5 seconds
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _errorMessage = '';
         });

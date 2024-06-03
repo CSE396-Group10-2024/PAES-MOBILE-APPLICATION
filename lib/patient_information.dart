@@ -7,6 +7,29 @@ class PatientInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
+    // Extract patient information and convert to uppercase
+    String surname = (patient['surname'] ?? 'SURNAME').toUpperCase();
+    String firstName = (patient['name'] ?? 'FIRST NAME').toUpperCase();
+    String gender = patient['gender'] ?? 'GENDER';
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _icon(gender),
+        const SizedBox(height: 20),
+        Text(
+          "$surname, $firstName",
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+=======
     return Expanded(
       child: Column(
         children: [
@@ -36,15 +59,40 @@ class PatientInfo extends StatelessWidget {
           )
         ],
       ),
+>>>>>>> main
     );
   }
 
-  Widget _icon() {
+  Widget _icon(String gender) {
+    String assetPath;
+    if (gender.toLowerCase() == 'male') {
+      assetPath = 'images/male_icon.png';
+    } else {
+      assetPath = 'images/female_icon.png';
+    }
     return Container(
+<<<<<<< HEAD
+      decoration: BoxDecoration(
+=======
       child: const Icon(
         Icons.account_circle,
+>>>>>>> main
         color: Colors.white,
-        size: 150,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Image.asset(
+        assetPath,
+        width: 100,
+        height: 100,
       ),
     );
   }
